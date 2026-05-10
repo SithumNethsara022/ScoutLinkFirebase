@@ -17,16 +17,17 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const actions = [
-  { title: 'Attendance', desc: 'Mark & view attendance', icon: ClipboardCheck, color: 'text-green-500' },
-  { title: 'Programmes', desc: 'Weekly programmes', icon: BookOpen, color: 'text-blue-500' },
-  { title: 'Badge Works', desc: 'Awards & badges', icon: Award, color: 'text-yellow-500' },
-  { title: 'Discipline', desc: 'Discipline issues', icon: AlertTriangle, color: 'text-red-500' },
-  { title: 'Appointments', desc: 'Interview bookings & hikes', icon: MessageSquare, color: 'text-purple-500' },
-  { title: 'Calendar', desc: 'Events & schedule', icon: Calendar, color: 'text-cyan-500' },
-  { title: 'Messages', desc: 'Chat with scouts', icon: MessageCircle, color: 'text-green-400' },
-  { title: 'Meetings', desc: 'Schedule & join meetings', icon: Video, color: 'text-blue-400' },
+  { title: 'Attendance', desc: 'Mark & view attendance', icon: ClipboardCheck, color: 'text-green-500', href: '/attendance' },
+  { title: 'Programmes', desc: 'Weekly programmes', icon: BookOpen, color: 'text-blue-500', href: '#' },
+  { title: 'Badge Works', desc: 'Awards & badges', icon: Award, color: 'text-yellow-500', href: '/badges' },
+  { title: 'Discipline', desc: 'Discipline issues', icon: AlertTriangle, color: 'text-red-500', href: '#' },
+  { title: 'Appointments', desc: 'Interview bookings & hikes', icon: MessageSquare, color: 'text-purple-500', href: '#' },
+  { title: 'Calendar', desc: 'Events & schedule', icon: Calendar, color: 'text-cyan-500', href: '/events' },
+  { title: 'Messages', desc: 'Chat with scouts', icon: MessageCircle, color: 'text-green-400', href: '#' },
+  { title: 'Meetings', desc: 'Schedule & join meetings', icon: Video, color: 'text-blue-400', href: '#' },
 ];
 
 export default function Home() {
@@ -61,13 +62,15 @@ export default function Home() {
       {/* Action Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {actions.map((action, i) => (
-          <div key={i} className="action-card group">
-            <action.icon className={cn("w-8 h-8", action.color)} />
-            <div>
-              <h3 className="font-bold uppercase tracking-widest text-sm mb-1">{action.title}</h3>
-              <p className="text-[11px] text-muted-foreground leading-tight">{action.desc}</p>
+          <Link key={i} href={action.href}>
+            <div className="action-card group h-full">
+              <action.icon className={cn("w-8 h-8", action.color)} />
+              <div>
+                <h3 className="font-bold uppercase tracking-widest text-sm mb-1">{action.title}</h3>
+                <p className="text-[11px] text-muted-foreground leading-tight">{action.desc}</p>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </section>
 

@@ -9,7 +9,7 @@ import {
   Calendar, 
   Users, 
   TrendingUp, 
-  ShieldCheck,
+  ClipboardCheck,
   Menu,
   X
 } from 'lucide-react';
@@ -20,6 +20,7 @@ import { useState } from 'react';
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { label: 'My Profile', icon: UserCircle, href: '/profile/1' },
+  { label: 'Attendance', icon: ClipboardCheck, href: '/attendance' },
   { label: 'Badges & Awards', icon: Award, href: '/badges' },
   { label: 'Events', icon: Calendar, href: '/events' },
   { label: 'Authority Chart', icon: Users, href: '/org-chart' },
