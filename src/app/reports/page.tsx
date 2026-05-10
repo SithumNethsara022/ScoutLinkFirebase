@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge" 
-
 "use client";
 
 import { useState } from 'react';
@@ -11,12 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   FileText, Plus, Search, X, Upload, Megaphone, Bell, 
-  ChevronLeft, Filter, FileUp, MessageSquare, Trash2 
+  ChevronLeft, MessageSquare 
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 // Mock User Data for testing
@@ -125,7 +122,7 @@ export default function ReportsPage() {
         ))}
       </div>
 
-      {/* ADD REPORT MODAL - MATCHES SCREENSHOT */}
+      {/* ADD REPORT MODAL */}
       {showAddReport && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
           <div className="w-full max-w-xl bg-[#03150b] border border-primary/20 rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
@@ -146,7 +143,7 @@ export default function ReportsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-white uppercase">Event Date * <span className="text-[10px] text-muted-foreground normal-case">(when it took place)</span></Label>
+                <Label className="text-xs font-bold text-white uppercase">Event Date *</Label>
                 <Input 
                   type="date" 
                   required 
@@ -163,7 +160,7 @@ export default function ReportsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-white uppercase">Full Report <span className="text-muted-foreground">(optional)</span></Label>
+                <Label className="text-xs font-bold text-white uppercase">Full Report</Label>
                 <Textarea 
                   placeholder="Type the full report here..." 
                   className="min-h-[120px] rounded-xl bg-black/40 border-primary/40 focus:border-primary text-white p-4"
@@ -171,7 +168,7 @@ export default function ReportsPage() {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-bold text-white uppercase">Upload Document <span className="text-yellow-500 text-[10px]">(Recommended)</span></Label>
+                <Label className="text-xs font-bold text-white uppercase">Upload Document</Label>
                 <div className="border-2 border-dashed border-primary/20 rounded-2xl p-8 flex flex-col items-center justify-center bg-black/20 hover:bg-black/40 transition-colors group cursor-pointer">
                   <Upload className="w-8 h-8 text-primary/40 group-hover:text-primary transition-colors mb-4" />
                   <p className="text-[10px] text-muted-foreground uppercase text-center mb-2">Uploading a document is the best choice for detailed reports</p>
