@@ -1,3 +1,4 @@
+
 export type Role = 
   | 'Scout' 
   | 'Patrol Leader' 
@@ -64,4 +65,14 @@ export interface ScoutProfile {
   patrolPoints: number;
   subTroopPoints: number;
   status: 'Pending' | 'Approved';
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: 'Award' | 'Badge' | 'Discipline' | 'Event' | 'System';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
 }

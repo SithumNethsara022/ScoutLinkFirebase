@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Camera, Info, User, BookOpen, Award, CheckCircle2 } from 'lucide-react';
+import { Shield, Camera, Award, BookOpen, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { calculateGrade } from '@/lib/grade-utils';
 import { toast } from '@/hooks/use-toast';
@@ -34,72 +34,73 @@ export default function OnboardingPage() {
     subTroop: '',
     role: '' as Role,
     membershipNumber: '',
-    awardStatus: {} as any,
   });
 
   const grade = formData.birthday ? calculateGrade(formData.birthday) : null;
 
-  // Roles that don't have patrols/subtroops
   const noPatrolRoles = ['Instructor', 'Senior Troop Leader', 'Assistant Senior Troop Leader', 'Assistant Scout Leader', 'Scout Leader'];
   const noPatrolSubTroopOnlyRoles = ['Senior Scout'];
 
   const handleNext = () => {
-    if (step === 1 && (!formData.name || !formData.email || !formData.birthday || !formData.role)) {
-      toast({ title: "Required Fields", description: "Please complete all identity details.", variant: "destructive" });
-      return;
-    }
-    if (step === 2) {
+    if (step === 1) {
+      if (!formData.name || !formData.email || !formData.birthday || !formData.role || !formData.homeAddress || !formData.phoneNumber || !formData.parentsNames) {
+        toast({ title: "Required Fields", description: "Please complete all identity details in Section 1.", variant: "destructive" });
+        return;
+      }
+      setStep(2);
+    } else {
       toast({ 
-        title: "Request Transmitted", 
-        description: "Your registration request has been sent to the Scout Leader for validation.",
+        title: "Induction Requested", 
+        description: "Your profile has been transmitted to the Scout Leader for validation.",
       });
       router.push('/');
-      return;
     }
-    setStep(step + 1);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 forest-gradient">
-      <Card className="w-full max-w-3xl glass-panel border-none rounded-[3rem] shadow-2xl overflow-hidden">
-        <div className="h-2 bg-primary w-full" style={{ width: `${(step / 2) * 100}%` }} />
-        <CardHeader className="p-10 pb-6 text-center">
-           <div className="w-16 h-16 rounded-[1.5rem] liquid-glass flex items-center justify-center mx-auto mb-4">
-             <Shield className="w-8 h-8 text-primary" />
+      <Card className="w-full max-w-3xl glass-panel border-none rounded-[3.5rem] shadow-2xl overflow-hidden relative">
+        <div className="absolute top-0 left-0 h-1.5 bg-primary transition-all duration-500" style={{ width: `${(step / 2) * 100}%` }} />
+        
+        <CardHeader className="p-12 pb-6 text-center">
+           <div className="w-20 h-20 rounded-[2rem] liquid-glass flex items-center justify-center mx-auto mb-6 border border-primary/20">
+             <Shield className="w-10 h-10 text-primary" />
            </div>
-           <CardTitle className="text-2xl font-black gold-text uppercase tracking-tight">Troop Induction</CardTitle>
-           <CardDescription className="text-muted-foreground uppercase tracking-widest text-[8px] mt-2">Section {step}: {step === 1 ? 'Identity & Role' : 'Badge Work Status'}</CardDescription>
+           <CardTitle className="text-3xl font-black gold-text uppercase tracking-tight">Troop Induction</CardTitle>
+           <p className="text-muted-foreground uppercase tracking-[0.3em] text-[9px] font-black mt-3">
+             {step === 1 ? 'Section I: Identity & Command' : 'Section II: Badge Work Registry'}
+           </p>
         </CardHeader>
         
-        <CardContent className="p-10 pt-0 space-y-8">
+        <CardContent className="p-12 pt-0 space-y-10">
           {step === 1 ? (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Full Name</Label>
-                  <Input placeholder="Full Name" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Full Name</Label>
+                  <Input placeholder="Full Name" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, name: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Email</Label>
-                  <Input type="email" placeholder="Email" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Email Address</Label>
+                  <Input type="email" placeholder="Email" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, email: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Birthday</Label>
-                  <Input type="date" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, birthday: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Birthday</Label>
+                  <Input type="date" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, birthday: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Grade (Auto)</Label>
-                  <div className="h-12 flex items-center px-4 rounded-xl bg-white/5 border border-white/5 text-primary font-black uppercase text-xs">
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Grade (Auto-Calculated)</Label>
+                  <div className="h-14 flex items-center px-6 rounded-2xl bg-white/5 border border-white/5 text-primary font-black uppercase text-xs">
                     {grade ? `Grade ${grade}` : 'Select Birthday'}
                   </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                   <Label className="text-[10px] uppercase font-black tracking-widest">Role within Troop</Label>
+                   <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Troop Appointment</Label>
                    <Select onValueChange={(v) => setFormData({...formData, role: v as Role})}>
-                     <SelectTrigger className="rounded-xl bg-black/20 border-white/5 h-12">
+                     <SelectTrigger className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold">
                        <SelectValue placeholder="Select Role" />
                      </SelectTrigger>
-                     <SelectContent>
+                     <SelectContent className="rounded-2xl bg-background border-white/10">
                        {ROLES.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                      </SelectContent>
                    </Select>
@@ -107,12 +108,12 @@ export default function OnboardingPage() {
                 
                 {!noPatrolRoles.includes(formData.role) && (
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-black tracking-widest">Sub Troop</Label>
+                    <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Sub Troop</Label>
                     <Select onValueChange={(v) => setFormData({...formData, subTroop: v})}>
-                      <SelectTrigger className="rounded-xl bg-black/20 border-white/5 h-12">
+                      <SelectTrigger className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold">
                         <SelectValue placeholder="Select Sub Troop" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="rounded-2xl bg-background border-white/10">
                         <SelectItem value="Gold I">Gold I</SelectItem>
                         <SelectItem value="Gold II">Gold II</SelectItem>
                         <SelectItem value="Gold III">Gold III</SelectItem>
@@ -124,73 +125,73 @@ export default function OnboardingPage() {
 
                 {!noPatrolRoles.includes(formData.role) && !noPatrolSubTroopOnlyRoles.includes(formData.role) && (
                   <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-black tracking-widest">Patrol</Label>
-                    <Input placeholder="e.g. Eagles" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, patrol: e.target.value})} />
+                    <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Patrol</Label>
+                    <Input placeholder="e.g. Eagles" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, patrol: e.target.value})} />
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Contact Number</Label>
-                  <Input placeholder="Contact Number" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Phone Number</Label>
+                  <Input placeholder="07x xxxxxxx" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Parents' Names</Label>
-                  <Input placeholder="Parents' Names" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, parentsNames: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Parents' Names</Label>
+                  <Input placeholder="Parents' Names" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, parentsNames: e.target.value})} />
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest">Home Address</Label>
-                  <Input placeholder="Home Address" className="rounded-xl bg-black/20 border-white/5 h-12" onChange={(e) => setFormData({...formData, homeAddress: e.target.value})} />
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2 tracking-widest">Home Address</Label>
+                  <Input placeholder="Residential Address" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, homeAddress: e.target.value})} />
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-4 py-6 border-t border-white/5">
+              <div className="flex flex-col items-center gap-4 py-8 border-t border-white/5">
                 <div className="relative group cursor-pointer">
-                  <div className="w-24 h-24 rounded-[2rem] liquid-glass flex items-center justify-center border-2 border-dashed border-primary/30 group-hover:border-primary transition-colors">
-                    <Camera className="w-6 h-6 text-primary/50" />
+                  <div className="w-24 h-24 rounded-[2.5rem] liquid-glass flex items-center justify-center border-2 border-dashed border-primary/30 group-hover:border-primary transition-colors">
+                    <Camera className="w-8 h-8 text-primary/50" />
                   </div>
                   <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
                 </div>
                 <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest text-center">
-                  Requirement: Upper body photo in full scout uniform
+                  Requirement: Formal photo in full scout uniform
                 </p>
               </div>
             </div>
           ) : (
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 gap-6">
-                <div className="p-6 rounded-[2rem] bg-white/5 border border-white/5 space-y-6">
-                  <div className="flex items-center gap-3 text-primary">
-                    <Award className="w-5 h-5" />
-                    <h4 className="text-[10px] uppercase font-black tracking-widest">Membership Progress</h4>
+            <div className="space-y-10">
+              <div className="p-8 rounded-[3rem] bg-white/[0.03] border border-white/5 space-y-8">
+                <div className="flex items-center gap-4 text-primary">
+                  <CheckCircle2 className="w-6 h-6" />
+                  <h4 className="text-xs uppercase font-black tracking-widest">Membership & Core Progress</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2">Membership Number</Label>
+                    <Input placeholder="xx/xxxx/xx/(J or S)" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" onChange={(e) => setFormData({...formData, membershipNumber: e.target.value})} />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black tracking-widest">Membership Number</Label>
-                      <Input placeholder="xx/xxxx/xx/(J or S)" className="rounded-xl bg-black/20 border-white/5 h-11" onChange={(e) => setFormData({...formData, membershipNumber: e.target.value})} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black tracking-widest">Date Passed</Label>
-                      <Input type="date" className="rounded-xl bg-black/20 border-white/5 h-11" />
-                    </div>
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase font-black text-muted-foreground ml-2">Passing Date</Label>
+                    <Input type="date" className="rounded-2xl bg-black/20 border-white/5 h-14 px-6 font-bold" />
                   </div>
                 </div>
+              </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-blue-400">
-                    <BookOpen className="w-5 h-5" />
-                    <h4 className="text-[10px] uppercase font-black tracking-widest">Log Award Status</h4>
-                  </div>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 text-blue-400">
+                  <Award className="w-6 h-6" />
+                  <h4 className="text-xs uppercase font-black tracking-widest">Initial Award Alignment</h4>
+                </div>
+                <div className="grid gap-4">
                   {['Scout Award', "Chief Commissioner's Award", "Prime Minister's Award", "President's Scout Award"].map(award => (
-                    <div key={award} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-colors">
-                       <span className="text-[10px] font-black uppercase tracking-tighter">{award}</span>
+                    <div key={award} className="p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.05] transition-all">
+                       <span className="text-[11px] font-black uppercase tracking-widest">{award}</span>
                        <Select>
-                         <SelectTrigger className="w-[200px] rounded-xl h-9 text-[9px] uppercase font-black bg-black/20">
-                            <SelectValue placeholder="Status" />
+                         <SelectTrigger className="w-[220px] rounded-2xl h-12 text-[10px] uppercase font-black bg-black/40 border-white/10">
+                            <SelectValue placeholder="Current Status" />
                          </SelectTrigger>
-                         <SelectContent>
+                         <SelectContent className="rounded-2xl bg-background border-white/10">
                             <SelectItem value="not-started">Not Started</SelectItem>
-                            <SelectItem value="passed">Passed</SelectItem>
-                            <SelectItem value="pending">Pending Interview</SelectItem>
+                            <SelectItem value="passed">Passed (Verified)</SelectItem>
+                            <SelectItem value="pending">In Progress / Pending</SelectItem>
                          </SelectContent>
                        </Select>
                     </div>
@@ -200,14 +201,14 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          <div className="pt-4 flex gap-4">
+          <div className="pt-6 flex gap-6">
              {step > 1 && (
-               <Button variant="ghost" className="h-14 rounded-2xl flex-1 uppercase tracking-widest font-black border border-white/5" onClick={() => setStep(step - 1)}>
+               <Button variant="ghost" className="h-16 rounded-[2rem] flex-1 uppercase tracking-[0.2em] font-black border border-white/5" onClick={() => setStep(step - 1)}>
                  Back
                </Button>
              )}
-             <Button className="h-14 rounded-2xl flex-[2] uppercase tracking-widest font-black bg-primary hover:bg-primary/90 text-black shadow-xl" onClick={handleNext}>
-                {step === 1 ? 'Configure Badge Work' : 'Request Access to Troop'}
+             <Button className="h-16 rounded-[2rem] flex-[2] uppercase tracking-[0.2em] font-black bg-primary hover:bg-primary/90 text-black shadow-[0_0_30px_rgba(212,175,55,0.2)]" onClick={handleNext}>
+                {step === 1 ? 'Next Step' : 'Request Induction'}
              </Button>
           </div>
         </CardContent>
