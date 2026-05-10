@@ -1,7 +1,7 @@
 
 'use client';
 
-import { initializeFirebase, useUser, useDoc, useFirestore } from '@/firebase';
+import { useUser, useDoc, useFirestore } from '@/firebase';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Leaderboard } from '@/components/dashboard/Leaderboard';
 import { 
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { doc } from 'firebase/firestore';
 
 const actions = [
   { title: 'Attendance', desc: 'Monthly tracker', icon: ClipboardCheck, color: 'text-green-500', href: '/attendance' },
@@ -39,7 +40,11 @@ export default function Home() {
   }, [profile, loading, router]);
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center bg-background"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -62,44 +67,44 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="hero-section mx-4 md:mx-0 shadow-2xl">
+      <section className="hero-section mx-4 md:mx-0 shadow-2xl animate-in zoom-in-95 duration-500">
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 relative z-10">
-          <div className="w-12 h-12 md:w-24 md:h-24 rounded-3xl liquid-glass flex items-center justify-center border-2 border-primary/30 rotate-3 shadow-xl shrink-0 overflow-hidden">
+          <div className="w-16 h-16 md:w-28 md:h-28 rounded-[2rem] md:rounded-[3rem] liquid-glass flex items-center justify-center border-2 border-primary/30 rotate-3 shadow-xl shrink-0 overflow-hidden group">
              {profile?.profilePicUrl ? (
-               <img src={profile.profilePicUrl} className="w-full h-full object-cover" />
+               <img src={profile.profilePicUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
              ) : (
-               <Shield className="w-6 h-6 md:w-10 md:h-10 text-primary" />
+               <Shield className="w-8 h-8 md:w-12 md:h-12 text-primary" />
              )}
           </div>
           <div className="text-center md:text-left">
-            <h2 className="text-lg md:text-3xl font-black gold-text uppercase tracking-tight">Vandé, {profile?.name?.split(' ')[0]}</h2>
+            <h2 className="text-xl md:text-4xl font-black gold-text uppercase tracking-tight">Vandé, {profile?.name?.split(' ')[0] || 'Scout'}</h2>
             <div className="flex flex-wrap justify-center md:justify-start gap-1.5 mt-3">
-              <span className="text-[6px] md:text-[9px] font-black px-3 py-1 rounded-md bg-white/5 border border-white/5 uppercase tracking-widest">{profile?.role}</span>
-              <span className="text-[6px] md:text-[9px] font-black px-3 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">Active Status</span>
+              <span className="text-[7px] md:text-[10px] font-black px-4 py-1.5 rounded-md bg-white/5 border border-white/5 uppercase tracking-widest">{profile?.role || 'Awaiting Induction'}</span>
+              <span className="text-[7px] md:text-[10px] font-black px-4 py-1.5 rounded-md bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">Registry Active</span>
             </div>
           </div>
           <div className="flex gap-10 md:ml-auto">
             <div className="text-center">
-               <p className="text-2xl md:text-4xl font-black gold-text leading-none">{profile?.totalPoints || 0}</p>
-               <p className="text-[6px] md:text-[8px] uppercase font-black text-muted-foreground mt-1 tracking-widest">Points</p>
+               <p className="text-3xl md:text-5xl font-black gold-text leading-none">{profile?.totalPoints || 0}</p>
+               <p className="text-[7px] md:text-[9px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Points</p>
             </div>
             <div className="text-center">
-               <p className="text-2xl md:text-4xl font-black text-blue-400 leading-none">#1</p>
-               <p className="text-[6px] md:text-[8px] uppercase font-black text-muted-foreground mt-1 tracking-widest">Rank</p>
+               <p className="text-3xl md:text-5xl font-black text-blue-400 leading-none">#{profile?.rank || '--'}</p>
+               <p className="text-[7px] md:text-[9px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Rank</p>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-6 px-4 md:px-0">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 px-4 md:px-0">
         {actions.map((action, i) => (
           <Link key={i} href={action.href}>
-            <div className="action-card p-4 md:p-8 border-white/5 hover:border-primary/20 h-full flex flex-col items-center text-center group">
-              <div className={cn("w-7 h-7 md:w-12 md:h-12 rounded-2xl bg-black/40 flex items-center justify-center mb-4 shrink-0 transition-all group-hover:scale-110 group-hover:bg-primary/10", action.color)}>
-                <action.icon className="w-4 h-4 md:w-6 md:h-6" />
+            <div className="action-card p-5 md:p-8 border-white/5 hover:border-primary/20 h-full flex flex-col items-center text-center group">
+              <div className={cn("w-8 h-8 md:w-14 md:h-14 rounded-2xl bg-black/40 flex items-center justify-center mb-4 shrink-0 transition-all group-hover:scale-110 group-hover:bg-primary/10", action.color)}>
+                <action.icon className="w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h3 className="font-black uppercase tracking-widest text-[8px] md:text-[11px] leading-tight mb-1">{action.title}</h3>
-              <p className="text-[6px] md:text-[8px] text-muted-foreground uppercase font-black tracking-tighter opacity-60 line-clamp-1">{action.desc}</p>
+              <h3 className="font-black uppercase tracking-widest text-[9px] md:text-[12px] leading-tight mb-1">{action.title}</h3>
+              <p className="text-[7px] md:text-[9px] text-muted-foreground uppercase font-black tracking-tighter opacity-60 line-clamp-1">{action.desc}</p>
             </div>
           </Link>
         ))}
@@ -110,17 +115,15 @@ export default function Home() {
       </div>
 
       <div className="space-y-4 px-4 md:px-0 pb-16">
-        <h3 className="text-[8px] md:text-[10px] font-black gold-text uppercase tracking-widest ml-2 flex items-center gap-2">
-           <ScrollText className="w-4 h-4" /> Recent Logistics
+        <h3 className="text-[9px] md:text-[11px] font-black gold-text uppercase tracking-widest ml-2 flex items-center gap-2">
+           <ScrollText className="w-5 h-5" /> Recent Logistics
         </h3>
         <div className="grid gap-3">
-           <div className="glass-panel p-12 rounded-3xl text-center opacity-20 border-dashed">
-              <p className="text-[10px] font-black uppercase tracking-widest">No recent registry activity detected</p>
+           <div className="glass-panel p-16 rounded-[2.5rem] text-center opacity-30 border-dashed border-2 border-white/10">
+              <p className="text-[11px] font-black uppercase tracking-widest">No recent registry activity detected</p>
            </div>
         </div>
       </div>
     </div>
   );
 }
-
-import { doc } from 'firebase/firestore';
