@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "ScoutProfile": {
@@ -78,7 +79,8 @@
         "duration": { "type": "number" },
         "reason": { "type": "string" },
         "attendees": { "type": "array", "items": { "type": "string" } },
-        "status": { "type": "string", "enum": ["Scheduled", "Live", "Ended"] }
+        "status": { "type": "string", "enum": ["Scheduled", "Live", "Ended"] },
+        "type": { "type": "string", "enum": ["Standard", "PIC", "STPLM", "Committee"] }
       }
     },
     "Committee": {
@@ -87,8 +89,28 @@
       "properties": {
         "name": { "type": "string" },
         "chairmanId": { "type": "string" },
-        "members": { "type": "array", "items": { "type": "string" } },
+        "members": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "userId": { "type": "string" },
+              "role": { "type": "string" }
+            }
+          } 
+        },
         "approved": { "type": "boolean" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "type": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "read": { "type": "boolean" }
       }
     }
   },
@@ -111,6 +133,10 @@
     "/committees/{committeeId}": {
       "schema": "Committee",
       "description": "Troop committees"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "System-wide notifications"
     }
   }
 }
