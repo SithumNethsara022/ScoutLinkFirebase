@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { ChevronLeft, Download, User, CheckCircle2, Circle, MessageSquare } from 'lucide-react';
+import { ChevronLeft, User, CheckCircle2, Circle, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,14 +23,12 @@ export default function AttendancePage() {
   const [selectedTroop, setSelectedTroop] = useState('Gold I');
   const [selectedPatrol, setSelectedPatrol] = useState(TROOP_PATROLS['Gold I'][0]);
   
-  // Mock check for leader ranks
-  const USER_ROLE = 'Patrol Leader';
-  const isLeader = ['Patrol Leader', 'Sub Troop Leader', 'Junior Troop Leader', 'Scout Leader'].includes(USER_ROLE);
+  const scouts: any[] = [];
 
   const handleDownload = (option: 'month' | 'year') => {
     toast({ 
       title: "Generating Report", 
-      description: option === 'month' ? "Exporting current month's Excel sheet..." : "Exporting past 12 months Excel sheet...",
+      description: "Excel file generation started...",
     });
   };
 
@@ -73,17 +71,16 @@ export default function AttendancePage() {
           <TabsContent key={troop} value={troop} className="space-y-6">
             <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
               {TROOP_PATROLS[troop].map(patrol => (
-                <Button
+                <button
                   key={patrol}
-                  variant={selectedPatrol === patrol ? 'default' : 'outline'}
                   onClick={() => setSelectedPatrol(patrol)}
                   className={cn(
-                    "rounded-full px-6 h-9 text-[10px] uppercase font-black tracking-widest shrink-0",
-                    selectedPatrol === patrol ? "bg-primary text-black border-none" : "border-white/5 text-muted-foreground"
+                    "rounded-full px-6 h-9 text-[10px] uppercase font-black tracking-widest shrink-0 transition-all",
+                    selectedPatrol === patrol ? "bg-primary text-black" : "border border-white/5 text-muted-foreground hover:bg-white/5"
                   )}
                 >
                   {patrol}
-                </Button>
+                </button>
               ))}
             </div>
 
@@ -92,17 +89,7 @@ export default function AttendancePage() {
                 <div className="p-10 border-b border-white/5 flex justify-between items-end bg-white/[0.01]">
                   <div>
                     <h3 className="text-3xl font-black gold-text uppercase tracking-tighter leading-none">{selectedPatrol} Patrol</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase font-black mt-3 tracking-widest">Monthly Wednesday Ledger • May 2026</p>
-                  </div>
-                  <div className="flex gap-8">
-                    <div className="text-center">
-                      <p className="text-3xl font-black text-primary leading-none">12</p>
-                      <p className="text-[8px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Total Strength</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-3xl font-black text-green-500 leading-none">94%</p>
-                      <p className="text-[8px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Patrol Score</p>
-                    </div>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black mt-3 tracking-widest">Monthly Ledger</p>
                   </div>
                 </div>
 
@@ -115,56 +102,31 @@ export default function AttendancePage() {
                     <div className="col-span-2 text-center">Week 4</div>
                   </div>
 
-                  {[
-                    { name: 'Sithum Nethsara', grade: 10, att: [true, true, true, false] },
-                    { name: 'Amiru Perera', grade: 9, att: [true, true, true, true] },
-                    { name: 'Heshan Silva', grade: 11, att: [false, true, true, true] },
-                    { name: 'Ravindu Fernando', grade: 10, att: [true, true, true, true] },
-                  ].map((scout, idx) => (
+                  {scouts.length > 0 ? scouts.map((scout, idx) => (
                     <div key={idx} className="grid grid-cols-12 items-center py-6 border-b border-white/[0.02] group hover:bg-white/[0.01] rounded-2xl px-2 -mx-2 transition-colors">
-                      <div className="col-span-4 flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                          <User className="w-5 h-5 text-primary/50 group-hover:text-primary transition-colors" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-black uppercase tracking-tighter group-hover:text-primary transition-colors">{scout.name}</p>
-                          <p className="text-[9px] text-muted-foreground uppercase font-black">Grade {scout.grade} • Swan Patrol</p>
-                        </div>
-                      </div>
-                      {scout.att.map((present, i) => (
-                        <div key={i} className="col-span-2 flex justify-center">
-                          <button className="focus:outline-none transition-transform active:scale-90">
-                            {present ? 
-                              <CheckCircle2 className="w-8 h-8 text-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]" /> : 
-                              <Circle className="w-8 h-8 text-white/5 hover:text-white/20 transition-colors" />
-                            }
-                          </button>
-                        </div>
-                      ))}
+                      {/* Scout row content */}
                     </div>
-                  ))}
+                  )) : (
+                    <div className="py-20 text-center opacity-20">
+                      <User className="w-12 h-12 mx-auto mb-4" />
+                      <p className="text-[10px] font-black uppercase tracking-widest">No scouts registered in this patrol</p>
+                    </div>
+                  )}
 
                   <div className="pt-8 space-y-6">
                     <div className="flex items-center gap-3 text-primary/60">
                        <MessageSquare className="w-4 h-4" />
                        <span className="text-[10px] font-black uppercase tracking-widest">Leadership Comments</span>
                     </div>
-                    <div className="p-6 rounded-[2rem] bg-white/[0.02] border border-white/5">
-                       <p className="text-[10px] text-muted-foreground uppercase leading-relaxed font-medium italic">
-                         "Excellent discipline this month. Week 4 absence for Sithum was due to District Trial." - JTL Asher
-                       </p>
+                    <div className="p-4 flex gap-4">
+                      <Input 
+                        placeholder="Add comment..." 
+                        className="rounded-[2rem] bg-black/40 border-white/5 h-14 pl-8 text-xs font-medium"
+                      />
+                      <Button className="h-14 px-8 rounded-[2rem] bg-primary text-black font-black uppercase text-[10px] tracking-widest">
+                        Post
+                      </Button>
                     </div>
-                    {isLeader && (
-                      <div className="flex gap-4">
-                        <Input 
-                          placeholder="Type comment or add new scout..." 
-                          className="rounded-[2rem] bg-black/40 border-white/5 h-14 pl-8 text-xs font-medium"
-                        />
-                        <Button className="h-14 px-8 rounded-[2rem] bg-primary text-black font-black uppercase text-[10px] tracking-widest">
-                          Commit Update
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 </div>
               </CardContent>

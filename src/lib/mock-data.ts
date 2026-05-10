@@ -1,114 +1,34 @@
 
-import { ScoutProfile, Role } from './types';
+import { ScoutProfile } from './types';
 
-export const MOCK_SCOUTS: ScoutProfile[] = [
-  {
-    id: '1',
-    name: 'Asher Quinn',
-    role: 'Scout Leader',
-    position: 'Scout Leader',
-    grade: 12,
-    homeAddress: '123 Forest Trail, Greenwoods',
-    phoneNumber: '+1-555-0101',
-    parentsNames: 'Arthur & Martha Quinn',
-    birthday: '2008-05-15',
-    awards: [
-      { name: 'Membership', passingDate: '2018-05-20', status: 'Passed' },
-      { name: 'Scout Award', passingDate: '2019-06-15', status: 'Passed' },
-      { name: "Chief Commissioner's Award", passingDate: '2020-08-10', status: 'Passed' },
-      { name: "Prime Minister's Award", passingDate: '2021-12-05', status: 'Passed' },
-      { name: "President's Scout Award", passingDate: '2023-01-20', status: 'Passed' },
-    ],
-    badges: [
-      { name: 'First Aid', category: 'Public Service', passingDate: '2019-01-10', code: 'SB-1', type: 'Senior' },
-      { name: 'Cook', category: 'Camp Craft', passingDate: '2019-02-15', code: 'SB-2', type: 'Senior' },
-    ],
-    attendancePoints: 120,
-    disciplinePoints: 0,
-    eventPoints: 340,
-    totalPoints: 850,
-    status: 'Approved',
-    extraPositions: ['IT Committee Chairman']
-  },
-  {
-    id: '2',
-    name: 'Ethan Hunt',
-    role: 'Senior Scout',
-    position: 'Troop Leader',
-    subTroop: 'Gold I',
-    patrol: 'Eagles',
-    grade: 11,
-    homeAddress: '456 Ridge Path, Heights',
-    phoneNumber: '+1-555-0102',
-    parentsNames: 'Ethan Hunt Sr.',
-    birthday: '2009-11-20',
-    awards: [
-      { name: 'Membership', passingDate: '2020-05-20', status: 'Passed' },
-      { name: 'Scout Award', passingDate: '2021-06-15', status: 'Passed' },
-    ],
-    badges: [
-      { name: 'Swimmer', category: 'Sports', passingDate: '2020-08-10', code: 'SB-5', type: 'Senior' },
-    ],
-    attendancePoints: 95,
-    disciplinePoints: -5,
-    eventPoints: 210,
-    totalPoints: 450,
-    status: 'Approved'
-  },
-  {
-    id: '3',
-    name: 'Sarah Miller',
-    role: 'Scout',
-    position: 'Patrol Leader',
-    subTroop: 'Gold II',
-    patrol: 'Woodpeckers',
-    grade: 10,
-    homeAddress: '789 Oak Lane, Valley',
-    phoneNumber: '+1-555-0103',
-    parentsNames: 'Sarah Miller Sr.',
-    birthday: '2010-02-10',
-    awards: [
-      { name: 'Membership', passingDate: '2022-01-10', status: 'Passed' },
-    ],
-    badges: [],
-    attendancePoints: 45,
-    disciplinePoints: 0,
-    eventPoints: 85,
-    totalPoints: 240,
-    status: 'Approved'
-  }
-];
+export const MOCK_SCOUTS: ScoutProfile[] = [];
 
 export const AUTHORITY_CHART = {
-  gsl: { name: 'Dr. Robert Harrison', position: 'GSL', contact: false },
-  mic: { name: 'Mrs. Linda Foster', position: 'MIC', contact: false },
-  leader: { id: '1', name: 'Asher Quinn', position: 'Scout Leader', contact: true },
-  asls: [
-    { id: '4', name: 'James Wilson', position: 'ASL', contact: true },
-    { id: '5', name: 'Mary Chen', position: 'ASL', contact: true },
-  ],
-  instructors: [
-    { id: '6', name: 'David Lee', position: 'STL', contact: true, extra: 'Badge Secretary' },
-    { id: '7', name: 'Sophie Turner', position: 'ASTL', contact: true, extra: 'Asst. Badge Secretary' },
-  ],
+  gsl: { name: 'To be assigned', position: 'GSL', contact: false },
+  mic: { name: 'To be assigned', position: 'MIC', contact: false },
+  leader: { id: '', name: 'To be assigned', position: 'Scout Leader', contact: false },
+  asls: [],
+  instructors: [],
   subTroops: [
     {
       name: 'Gold I',
-      leader: 'Mark Anthony',
-      patrols: [
-        { name: 'Kingfishers', leader: 'Ethan Hunt', assistant: 'Leo G' },
-        { name: 'Eagles', leader: 'Chris P', assistant: 'Alex D' },
-        { name: 'Seagulls', leader: 'Sam S', assistant: 'John K' },
-      ]
+      leader: 'To be assigned',
+      patrols: []
     },
     {
       name: 'Gold II',
-      leader: 'Sarah Jane',
-      patrols: [
-        { name: 'Woodpeckers', leader: 'John D', assistant: 'Mike S' },
-        { name: 'Parrots', leader: 'Emily R', assistant: 'Toby F' },
-        { name: 'Salalihini', leader: 'Sithum N', assistant: 'Ravindu F' },
-      ]
+      leader: 'To be assigned',
+      patrols: []
+    },
+    {
+      name: 'Gold III',
+      leader: 'To be assigned',
+      patrols: []
+    },
+    {
+      name: 'Gold IV',
+      leader: 'To be assigned',
+      patrols: []
     }
   ]
 };

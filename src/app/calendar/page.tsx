@@ -4,13 +4,10 @@
 import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Filter, Plus, ChevronLeft, ChevronRight, MapPin, Flag } from 'lucide-react';
+import { Calendar as CalendarIcon, Filter, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
 
 const EVENT_TYPES = {
   Troop: { label: 'Troop Event', color: 'bg-green-500', text: 'text-green-500' },
@@ -22,14 +19,7 @@ export default function CalendarPage() {
   const [view, setView] = useState('monthly');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  const MOCK_EVENTS = [
-    { id: '1', title: 'Wednesday Scouting', date: '2026-05-06', type: 'Troop', location: 'Main Ground' },
-    { id: '2', title: 'District Hiking Trial', date: '2026-05-15', type: 'District', location: 'Labookellie' },
-    { id: '3', title: 'Annual Campfire', date: '2026-06-20', type: 'Troop', location: 'School Field' },
-    { id: '4', title: 'Inter-School Meet', date: '2026-07-05', type: 'School', location: 'Stadium' },
-  ];
-
-  const filteredEvents = MOCK_EVENTS.filter(e => typeFilter === 'all' || e.type === typeFilter);
+  const events: any[] = [];
 
   return (
     <div className="space-y-8 pb-20">
@@ -50,7 +40,6 @@ export default function CalendarPage() {
           <TabsList className="bg-black/20 border border-white/5 p-1 rounded-2xl h-12 w-full md:w-auto">
             <TabsTrigger value="annual" className="rounded-xl px-8 text-[10px] font-black uppercase">Annual</TabsTrigger>
             <TabsTrigger value="monthly" className="rounded-xl px-8 text-[10px] font-black uppercase">Monthly</TabsTrigger>
-            <TabsTrigger value="weekly" className="rounded-xl px-8 text-[10px] font-black uppercase">Weekly</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-4 w-full md:w-auto">
@@ -69,43 +58,16 @@ export default function CalendarPage() {
         </div>
 
         <TabsContent value="annual">
-           <Card className="glass-panel border-none rounded-[3rem] p-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(month => {
-                   const monthName = new Date(2026, month - 1).toLocaleString('default', { month: 'long' });
-                   const monthEvents = filteredEvents.filter(e => new Date(e.date).getMonth() === month - 1);
-                   
-                   return (
-                     <div key={month} className="space-y-6">
-                        <h3 className="text-xl font-black uppercase tracking-widest border-b border-white/5 pb-4">{monthName}</h3>
-                        <div className="space-y-4">
-                           {monthEvents.length > 0 ? (
-                             monthEvents.map(event => (
-                               <div key={event.id} className="flex gap-4 items-start group">
-                                  <div className={cn("w-1 h-10 rounded-full shrink-0", EVENT_TYPES[event.type as keyof typeof EVENT_TYPES].color)} />
-                                  <div>
-                                     <p className="text-[10px] font-black uppercase tracking-tighter group-hover:text-primary transition-colors">{event.title}</p>
-                                     <p className="text-[8px] text-muted-foreground font-black uppercase mt-1">
-                                       {new Date(event.date).getDate()}th • {event.location}
-                                     </p>
-                                  </div>
-                               </div>
-                             ))
-                           ) : (
-                             <p className="text-[9px] text-muted-foreground/30 uppercase font-black">No deployment</p>
-                           )}
-                        </div>
-                     </div>
-                   )
-                 })}
-              </div>
+           <Card className="glass-panel border-none rounded-[3rem] p-12 text-center opacity-30">
+              <CalendarIcon className="w-16 h-16 mx-auto mb-6" />
+              <p className="text-[10px] font-black uppercase tracking-widest">No events scheduled for this year</p>
            </Card>
         </TabsContent>
 
         <TabsContent value="monthly">
            <Card className="glass-panel border-none rounded-[3rem] p-10 min-h-[600px]">
               <div className="flex justify-between items-center mb-10">
-                 <h3 className="text-2xl font-black gold-text uppercase tracking-widest">May 2026</h3>
+                 <h3 className="text-2xl font-black gold-text uppercase tracking-widest">Current Month</h3>
                  <div className="flex gap-2">
                     <Button variant="ghost" size="icon" className="rounded-xl border border-white/5"><ChevronLeft className="w-5 h-5" /></Button>
                     <Button variant="ghost" size="icon" className="rounded-xl border border-white/5"><ChevronRight className="w-5 h-5" /></Button>
@@ -115,24 +77,11 @@ export default function CalendarPage() {
                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                    <div key={day} className="p-4 bg-black/20 text-center text-[9px] font-black uppercase text-muted-foreground tracking-widest">{day}</div>
                  ))}
-                 {[...Array(31)].map((_, i) => {
-                   const day = i + 1;
-                   const dateStr = `2026-05-${day.toString().padStart(2, '0')}`;
-                   const dayEvents = filteredEvents.filter(e => e.date === dateStr);
-                   
-                   return (
-                     <div key={i} className="min-h-[120px] p-4 bg-black/40 hover:bg-white/[0.02] transition-colors relative group">
-                        <span className="text-[10px] font-black uppercase text-muted-foreground/50">{day}</span>
-                        <div className="mt-2 space-y-1">
-                           {dayEvents.map(event => (
-                             <div key={event.id} className={cn("px-2 py-1 rounded text-[7px] font-black uppercase border border-white/5", EVENT_TYPES[event.type as keyof typeof EVENT_TYPES].color, "text-black")}>
-                               {event.title}
-                             </div>
-                           ))}
-                        </div>
-                     </div>
-                   );
-                 })}
+                 {[...Array(31)].map((_, i) => (
+                   <div key={i} className="min-h-[120px] p-4 bg-black/40 hover:bg-white/[0.02] transition-colors relative group">
+                      <span className="text-[10px] font-black uppercase text-muted-foreground/50">{i + 1}</span>
+                   </div>
+                 ))}
               </div>
            </Card>
         </TabsContent>
