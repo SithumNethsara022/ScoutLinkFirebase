@@ -42,15 +42,16 @@
   @apply text-primary font-bold;
 }
 
-/* Enhanced Super Liquid Glass - Deeper Blur */
+/* Enhanced Super Liquid Glass - Significant Depth */
 .glass-panel {
-  @apply bg-white/[0.02] backdrop-blur-[80px] border border-white/10 shadow-2xl;
-  background-image: radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent);
+  @apply bg-white/[0.03] backdrop-blur-[100px] border border-white/10 shadow-2xl;
+  background-image: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .liquid-glass {
-  @apply bg-white/[0.05] backdrop-blur-[100px] border border-white/15 shadow-inner;
-  box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  @apply bg-white/[0.06] backdrop-blur-[120px] border border-white/15;
+  box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1.5px rgba(255, 255, 255, 0.1);
 }
 
 .forest-gradient {
@@ -62,17 +63,17 @@
 }
 
 .action-card {
-  @apply liquid-glass hover:bg-white/10 transition-all duration-300 cursor-pointer p-6 flex flex-col items-start gap-4 rounded-[2.5rem];
+  @apply glass-panel hover:bg-white/10 transition-all duration-500 cursor-pointer p-8 flex flex-col items-start gap-4 rounded-[3rem];
 }
 
 .hero-section {
-  @apply scout-gradient border border-primary/20 p-8 rounded-[3rem] relative overflow-hidden;
+  @apply scout-gradient border border-primary/20 p-12 rounded-[4rem] relative overflow-hidden;
 }
 
 .hero-section::before {
   content: '';
   @apply absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L33 27L60 30L33 33L30 60L27 33L0 30L27 27Z' fill='%23d4af37' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 0L66 54L120 60L66 66L60 120L54 66L0 60L54 54Z' fill='%23d4af37' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
 .sidebar-bg {
@@ -80,11 +81,15 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full;
+  @apply bg-white/10 rounded-full hover:bg-primary/40 transition-colors;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

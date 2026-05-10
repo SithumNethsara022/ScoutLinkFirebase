@@ -24,6 +24,7 @@ export interface AwardProgress {
   badgesDone?: boolean;
   passingDate?: string;
   membershipNumber?: string; // Format: xx/xxxx/xx/(J or S)
+  necessaryBadges?: { name: string; passingDate: string }[];
 }
 
 export interface ProficiencyBadge {
@@ -40,6 +41,7 @@ export interface ScoutProfile {
   email: string;
   role: Role;
   position: string;
+  extraPositions?: string[];
   subTroop?: SubTroop;
   patrol?: Patrol;
   grade: number;
@@ -49,6 +51,9 @@ export interface ScoutProfile {
   parentsNames: string;
   awards: AwardProgress[];
   badges: ProficiencyBadge[];
+  attendancePoints: number;
+  disciplinePoints: number;
+  eventPoints: number;
   totalPoints: number;
   profilePicUrl?: string;
   committees?: string[];
