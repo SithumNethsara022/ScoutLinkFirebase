@@ -95,9 +95,14 @@ export default function BadgesAwardsPage() {
 
   const handleCheckRequirements = async () => {
     if (!selectedAward) return;
+    const scout = MOCK_SCOUTS[0];
+    if (!scout) {
+      toast({ title: "Profile Missing", description: "No scout profile found. Please complete onboarding first.", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
     try {
-      const scout = MOCK_SCOUTS[0]; // Simulation
       const result = await awardPrerequisiteAdvisor({
         awardName: selectedAward as any,
         scoutProficiencyBadges: scout.badges.map(b => b.name)
@@ -264,7 +269,7 @@ export default function BadgesAwardsPage() {
                 </p>
               </div>
 
-              {canDelete && (
+              {canDelete && MOCK_SCOUTS[0] && (
                 <div className="pt-8 border-t border-white/5">
                   <h4 className="text-sm font-black text-red-400 uppercase mb-6 flex items-center gap-2">
                     <Trash2 className="w-5 h-5" /> Delete Entry (Leader Restricted)

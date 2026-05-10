@@ -28,6 +28,18 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
     toast({ title: "Profile Transmitted", description: "Changes saved to the troop registry." });
   };
 
+  if (!profile) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
+        <h2 className="text-2xl font-black gold-text uppercase">Profile Not Found</h2>
+        <p className="text-muted-foreground text-sm uppercase tracking-widest font-black">The requested scout profile does not exist in the registry.</p>
+        <Link href="/">
+           <Button className="rounded-2xl bg-primary text-black font-black uppercase tracking-widest px-8 h-12">Return to HQ</Button>
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-10 pb-24 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row gap-10 items-start">
@@ -145,7 +157,7 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                     <AwardIcon className="w-8 h-8" /> Award Progress
                   </CardTitle>
                   <div className="space-y-6">
-                    {profile.awards.map((a, i) => (
+                    {(profile.awards || []).map((a, i) => (
                       <div key={i} className="p-6 rounded-[2.5rem] bg-white/[0.03] border border-white/5 flex items-center justify-between hover:bg-white/[0.06] transition-all">
                         <div>
                           <p className="font-black text-sm uppercase tracking-tighter text-primary">{a.name}</p>
@@ -165,18 +177,28 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                     <Trophy className="w-8 h-8" /> Event Participation
                   </CardTitle>
                   <div className="space-y-4">
-                    <div className="p-8 rounded-[3rem] bg-white/[0.03] border border-white/5 flex items-center justify-between group">
-                       <div className="flex gap-8 items-center">
-                          <div className="w-16 h-16 rounded-[2rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:rotate-6 transition-transform">
-                             <Trophy className="w-8 h-8 text-amber-500" />
-                          </div>
-                          <div>
-                             <p className="font-black text-lg uppercase tracking-tight">Cantlay Challenge Shield</p>
-                             <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-2">2nd Place Overall • 2024-04-15</p>
-                          </div>
-                       </div>
-                       <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black uppercase px-4 py-2">Confirmed</Badge>
-                    </div>
+                    {(profile.eventHistory || []).map((event, i) => (
+                      <div key={i} className="p-8 rounded-[3rem] bg-white/[0.03] border border-white/5 flex items-center justify-between group">
+                        <div className="flex gap-8 items-center">
+                            <div className="w-16 h-16 rounded-[2rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:rotate-6 transition-transform">
+                                <Trophy className="w-8 h-8 text-amber-500" />
+                            </div>
+                            <div>
+                                <p className="font-black text-lg uppercase tracking-tight">{event.name}</p>
+                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-2">{event.place} Place • {event.date}</p>
+                            </div>
+                        </div>
+                        <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black uppercase px-4 py-2">
+                            {event.confirmed ? 'Confirmed' : 'Pending'}
+                        </Badge>
+                      </div>
+                    ))}
+                    {(!profile.eventHistory || profile.eventHistory.length === 0) && (
+                        <div className="py-20 text-center opacity-30">
+                            <Trophy className="w-12 h-12 mx-auto mb-4" />
+                            <p className="text-[10px] font-black uppercase tracking-widest">No event history found</p>
+                        </div>
+                    )}
                   </div>
                </Card>
             </TabsContent>
