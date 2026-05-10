@@ -64,11 +64,11 @@
 }
 
 .action-card {
-  @apply glass-panel hover:bg-white/10 transition-all duration-500 cursor-pointer rounded-[1.5rem] md:rounded-[2.5rem];
+  @apply glass-panel hover:bg-white/10 transition-all duration-500 cursor-pointer rounded-[2rem] md:rounded-[2.5rem];
 }
 
 .hero-section {
-  @apply scout-gradient border border-primary/20 p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] relative overflow-hidden;
+  @apply scout-gradient border border-primary/20 p-5 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] relative overflow-hidden;
 }
 
 .hero-section::before {
@@ -90,6 +90,14 @@
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   @apply bg-white/10 rounded-full hover:bg-primary/40 transition-colors;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .animate-pulse-slow {
