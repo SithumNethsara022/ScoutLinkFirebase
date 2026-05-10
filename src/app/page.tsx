@@ -7,29 +7,28 @@ import {
   ClipboardCheck, 
   BookOpen, 
   Award, 
-  AlertTriangle, 
+  ShieldAlert, 
   MessageSquare, 
   Calendar, 
-  MessageCircle, 
   Video,
   Bell,
   User,
   Shield,
   AlertCircle,
-  Users
+  Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 const actions = [
   { title: 'Attendance', desc: 'Monthly tracker', icon: ClipboardCheck, color: 'text-green-500', href: '/attendance' },
-  { title: 'Programmes', desc: 'Patrol weekly plans', icon: BookOpen, color: 'text-blue-500', href: '#' },
+  { title: 'Programmes', desc: 'Patrol weekly plans', icon: BookOpen, color: 'text-blue-500', href: '/programmes' },
   { title: 'Badge Works', desc: 'Awards & Proficiency', icon: Award, color: 'text-yellow-500', href: '/badges' },
-  { title: 'Discipline', desc: 'Report issues', icon: AlertTriangle, color: 'text-red-500', href: '#' },
-  { title: 'Appointments', desc: 'Interview bookings', icon: MessageSquare, color: 'text-purple-500', href: '#' },
+  { title: 'Discipline', desc: 'Conduct reports', icon: ShieldAlert, color: 'text-red-500', href: '/discipline' },
+  { title: 'Appointments', desc: 'Interview bookings', icon: MessageSquare, color: 'text-purple-500', href: '/appointments' },
   { title: 'Calendar', desc: 'Troop schedule', icon: Calendar, color: 'text-cyan-500', href: '/events' },
-  { title: 'Committees', desc: 'Manage committees', icon: Users, color: 'text-emerald-400', href: '/org-chart' },
-  { title: 'Meetings', desc: 'Troop virtual meet', icon: Video, color: 'text-blue-400', href: '#' },
+  { title: 'Committees', desc: 'Working groups', icon: Layers, color: 'text-emerald-400', href: '/committees' },
+  { title: 'Meetings', desc: 'Troop virtual meet', icon: Video, color: 'text-blue-400', href: '/meetings' },
 ];
 
 export default function Home() {
@@ -90,13 +89,13 @@ export default function Home() {
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2 gold-text uppercase tracking-[0.2em] font-black">
                 <AlertCircle className="w-5 h-5" />
-                Latest Announcements
+                Troop Broadcast
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {[
-                { title: 'Cantlay Challenge Shield 2024', desc: 'Registration is open for all patrols. Above 4 members required.', poster: 'Admin', color: 'border-primary' },
-                { title: 'Proficiency Badge Class', desc: 'Pioneer sessions start this Saturday at 0900 hrs.', poster: 'Instructor Sophie', color: 'border-blue-500' }
+                { title: 'Wednesday Scouting', desc: 'Full Uniform required for all Grade 6-12 Scouts. Pioneering practicals at 14:00.', poster: 'Scout Leader', color: 'border-primary' },
+                { title: 'SA Hike Window', desc: 'Registrations now open for the June 2026 window. Visit appointments to book.', poster: 'STL Anthony', color: 'border-blue-500' }
               ].map((ann, i) => (
                 <div key={i} className={cn("p-5 rounded-3xl bg-white/5 border-l-4 transition-transform hover:translate-x-1 cursor-default", ann.color)}>
                   <h4 className="font-bold mb-1 text-sm">{ann.title}</h4>

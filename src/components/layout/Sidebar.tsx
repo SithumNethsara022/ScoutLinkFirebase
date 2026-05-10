@@ -16,7 +16,9 @@ import {
   MessageSquare,
   CalendarCheck,
   Video,
-  Layers
+  Layers,
+  ShieldAlert,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,7 +28,9 @@ const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { label: 'My Profile', icon: UserCircle, href: '/profile/1' },
   { label: 'Attendance', icon: ClipboardCheck, href: '/attendance' },
+  { label: 'Programmes', icon: BookOpen, href: '/programmes' },
   { label: 'Badges & Awards', icon: Award, href: '/badges' },
+  { label: 'Discipline', icon: ShieldAlert, href: '/discipline' },
   { label: 'Events', icon: Calendar, href: '/events' },
   { label: 'Appointments', icon: CalendarCheck, href: '/appointments' },
   { label: 'Messages', icon: MessageSquare, href: '/messages' },
