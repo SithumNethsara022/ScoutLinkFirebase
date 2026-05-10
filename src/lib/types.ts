@@ -1,12 +1,29 @@
 
-export type Role = 'Scout' | 'Senior Scout' | 'Instructor' | 'Asst Scout Leader' | 'Scout Leader' | 'Admin';
+export type Role = 
+  | 'Scout' 
+  | 'Patrol Leader' 
+  | 'Assistant Patrol Leader' 
+  | 'Sub Troop Leader' 
+  | 'Assistant Sub Troop Leader' 
+  | 'Junior Troop Leader' 
+  | 'Assistant Junior Troop Leader' 
+  | 'Senior Scout' 
+  | 'Instructor' 
+  | 'Senior Troop Leader' 
+  | 'Assistant Senior Troop Leader' 
+  | 'Assistant Scout Leader' 
+  | 'Scout Leader';
 
 export type SubTroop = 'Gold I' | 'Gold II' | 'Gold III' | 'Gold IV';
 export type Patrol = 'Kingfishers' | 'Eagles' | 'Seagulls' | 'Woodpeckers' | 'Parrots' | 'Salalihini' | 'Buzzards' | 'Hawks' | 'Falcons' | 'Swans' | 'Peacocks' | 'Flamingo';
 
-export interface Award {
+export interface AwardProgress {
   name: string;
-  passingDate: string;
+  status: 'Not Started' | 'Test Passing' | 'Instructor Interview Pending' | 'Scout Leader Interview Pending' | 'ADC Interview Pending' | 'Passed';
+  hikeDone?: boolean;
+  badgesDone?: boolean;
+  passingDate?: string;
+  membershipNumber?: string; // Format: xx/xxxx/xx/(J or S)
 }
 
 export interface ProficiencyBadge {
@@ -20,53 +37,42 @@ export interface ProficiencyBadge {
 export interface ScoutProfile {
   id: string;
   name: string;
+  email: string;
   role: Role;
   position: string;
-  extraPositions?: string[];
   subTroop?: SubTroop;
   patrol?: Patrol;
   grade: number;
+  birthday: string;
   homeAddress: string;
   phoneNumber: string;
-  awards: Award[];
+  parentsNames: string;
+  awards: AwardProgress[];
   badges: ProficiencyBadge[];
-  attendancePoints: number;
-  disciplinePoints: number;
-  eventPoints: number;
   totalPoints: number;
+  profilePicUrl?: string;
   committees?: string[];
+  status: 'Pending' | 'Approved';
 }
 
-export type EventType = 
-  | 'troop' 
-  | 'district' 
-  | 'national' 
-  | 'international' 
-  | 'district committee' 
-  | 'national committee';
-
-export interface CalendarEvent {
-  id: string;
-  name: string;
-  date: string;
-  type: EventType;
-}
-
-export interface Meeting {
+export interface Report {
   id: string;
   title: string;
-  hostId: string;
-  scheduledAt: string;
-  duration: number;
-  reason: string;
-  attendees: string[];
-  status: 'Scheduled' | 'Live' | 'Ended';
+  authorId: string;
+  dateOfEvent: string;
+  description: string;
+  documentUrl?: string;
+  createdAt: string;
 }
 
-export interface Committee {
+export interface Announcement {
   id: string;
-  name: string;
-  chairmanId: string;
-  members: string[];
-  approved: boolean;
+  title: string;
+  content: string;
+  authorId: string;
+  scope: 'Patrol' | 'SubTroop' | 'Troop';
+  targetId?: string; // Patrol ID or SubTroop ID
+  readBy: string[];
+  archivedBy: string[];
+  createdAt: string;
 }

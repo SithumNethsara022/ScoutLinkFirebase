@@ -2,10 +2,9 @@
 "use client";
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Download, Plus, GripVertical, User, CheckCircle2, Circle } from 'lucide-react';
+import { ChevronLeft, Download, User, CheckCircle2, Circle, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -25,10 +24,14 @@ export default function AttendancePage() {
   const [selectedPatrol, setSelectedPatrol] = useState(TROOP_PATROLS['Gold I'][0]);
   
   // Mock check for leader ranks
-  const isLeader = true; 
+  const USER_ROLE = 'Patrol Leader';
+  const isLeader = ['Patrol Leader', 'Sub Troop Leader', 'Junior Troop Leader', 'Scout Leader'].includes(USER_ROLE);
 
-  const handleDownload = () => {
-    toast({ title: "Generating Excel", description: "Choosing between current month or past 12 months..." });
+  const handleDownload = (option: 'month' | 'year') => {
+    toast({ 
+      title: "Generating Report", 
+      description: option === 'month' ? "Exporting current month's Excel sheet..." : "Exporting past 12 months Excel sheet...",
+    });
   };
 
   return (
@@ -38,12 +41,14 @@ export default function AttendancePage() {
           <Link href="/" className="hover:opacity-70 transition-opacity">
             <ChevronLeft className="w-5 h-5 gold-text" />
           </Link>
-          <h1 className="text-lg font-bold tracking-widest gold-text uppercase">Attendance Tracker</h1>
+          <h1 className="text-lg font-black tracking-[0.2em] gold-text uppercase">Troop Registry</h1>
         </div>
-        <div className="flex items-center gap-2">
-           <Button onClick={handleDownload} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10 rounded-xl h-10 px-6 gap-2">
-            <Download className="w-4 h-4" />
-            Excel Export
+        <div className="flex items-center gap-3">
+           <Button onClick={() => handleDownload('month')} variant="outline" className="border-white/10 text-[9px] uppercase font-black hover:bg-primary/10 hover:text-primary rounded-xl h-10 px-4">
+            Current Month
+          </Button>
+           <Button onClick={() => handleDownload('year')} variant="outline" className="border-white/10 text-[9px] uppercase font-black hover:bg-primary/10 hover:text-primary rounded-xl h-10 px-4">
+            Last 12 Months
           </Button>
         </div>
       </header>
@@ -52,12 +57,12 @@ export default function AttendancePage() {
         setSelectedTroop(v);
         setSelectedPatrol(TROOP_PATROLS[v][0]);
       }}>
-        <TabsList className="bg-black/20 border border-white/5 p-1 rounded-2xl h-12 flex overflow-x-auto">
+        <TabsList className="bg-black/20 border border-white/5 p-1 rounded-2xl h-12 flex">
           {TROOPS.map((troop) => (
             <TabsTrigger
               key={troop}
               value={troop}
-              className="rounded-xl flex-1 px-6 data-[state=active]:bg-primary data-[state=active]:text-black transition-all text-[10px] uppercase font-bold"
+              className="rounded-xl flex-1 px-6 data-[state=active]:bg-primary data-[state=active]:text-black transition-all text-[10px] uppercase font-black"
             >
               {troop}
             </TabsTrigger>
@@ -66,15 +71,15 @@ export default function AttendancePage() {
 
         {TROOPS.map(troop => (
           <TabsContent key={troop} value={troop} className="space-y-6">
-            <div className="flex gap-2 overflow-x-auto py-2">
+            <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide">
               {TROOP_PATROLS[troop].map(patrol => (
                 <Button
                   key={patrol}
                   variant={selectedPatrol === patrol ? 'default' : 'outline'}
                   onClick={() => setSelectedPatrol(patrol)}
                   className={cn(
-                    "rounded-full px-6 h-9 text-[10px] uppercase font-black tracking-widest",
-                    selectedPatrol === patrol ? "bg-primary text-black" : "border-white/10 text-muted-foreground"
+                    "rounded-full px-6 h-9 text-[10px] uppercase font-black tracking-widest shrink-0",
+                    selectedPatrol === patrol ? "bg-primary text-black border-none" : "border-white/5 text-muted-foreground"
                   )}
                 >
                   {patrol}
@@ -82,52 +87,56 @@ export default function AttendancePage() {
               ))}
             </div>
 
-            <Card className="glass-panel border-none rounded-[2.5rem] overflow-hidden">
+            <Card className="glass-panel border-none rounded-[3rem] overflow-hidden">
               <CardContent className="p-0">
-                <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                <div className="p-10 border-b border-white/5 flex justify-between items-end bg-white/[0.01]">
                   <div>
-                    <h3 className="text-xl font-black gold-text uppercase tracking-tighter">{selectedPatrol} Patrol</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mt-1">Monthly Wednesday Attendance • May 2026</p>
+                    <h3 className="text-3xl font-black gold-text uppercase tracking-tighter leading-none">{selectedPatrol} Patrol</h3>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black mt-3 tracking-widest">Monthly Wednesday Ledger • May 2026</p>
                   </div>
-                  <div className="flex gap-4 text-center">
-                    <div>
-                      <p className="text-xl font-black text-primary">12</p>
-                      <p className="text-[8px] uppercase font-bold text-muted-foreground">Members</p>
+                  <div className="flex gap-8">
+                    <div className="text-center">
+                      <p className="text-3xl font-black text-primary leading-none">12</p>
+                      <p className="text-[8px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Total Strength</p>
                     </div>
-                    <div>
-                      <p className="text-xl font-black text-green-500">92%</p>
-                      <p className="text-[8px] uppercase font-bold text-muted-foreground">Average</p>
+                    <div className="text-center">
+                      <p className="text-3xl font-black text-green-500 leading-none">94%</p>
+                      <p className="text-[8px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Patrol Score</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-8 space-y-4">
-                  <div className="grid grid-cols-12 text-[10px] font-black uppercase text-muted-foreground tracking-widest pb-4 border-b border-white/5">
-                    <div className="col-span-4">Scout Name</div>
-                    <div className="col-span-2 text-center">May 06</div>
-                    <div className="col-span-2 text-center">May 13</div>
-                    <div className="col-span-2 text-center">May 20</div>
-                    <div className="col-span-2 text-center">May 27</div>
+                <div className="p-10 space-y-4">
+                  <div className="grid grid-cols-12 text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] pb-6 border-b border-white/5">
+                    <div className="col-span-4">Scout Identity</div>
+                    <div className="col-span-2 text-center">Week 1</div>
+                    <div className="col-span-2 text-center">Week 2</div>
+                    <div className="col-span-2 text-center">Week 3</div>
+                    <div className="col-span-2 text-center">Week 4</div>
                   </div>
 
                   {[
-                    { name: 'Sithum Nethsara', att: [true, true, true, false] },
-                    { name: 'Amiru Perera', att: [true, true, true, true] },
-                    { name: 'Heshan Silva', att: [false, true, true, true] },
+                    { name: 'Sithum Nethsara', grade: 10, att: [true, true, true, false] },
+                    { name: 'Amiru Perera', grade: 9, att: [true, true, true, true] },
+                    { name: 'Heshan Silva', grade: 11, att: [false, true, true, true] },
+                    { name: 'Ravindu Fernando', grade: 10, att: [true, true, true, true] },
                   ].map((scout, idx) => (
-                    <div key={idx} className="grid grid-cols-12 items-center py-4 border-b border-white/[0.03] group">
-                      <div className="col-span-4 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                          <User className="w-4 h-4 text-primary" />
+                    <div key={idx} className="grid grid-cols-12 items-center py-6 border-b border-white/[0.02] group hover:bg-white/[0.01] rounded-2xl px-2 -mx-2 transition-colors">
+                      <div className="col-span-4 flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                          <User className="w-5 h-5 text-primary/50 group-hover:text-primary transition-colors" />
                         </div>
-                        <span className="text-sm font-bold group-hover:text-primary transition-colors">{scout.name}</span>
+                        <div>
+                          <p className="text-sm font-black uppercase tracking-tighter group-hover:text-primary transition-colors">{scout.name}</p>
+                          <p className="text-[9px] text-muted-foreground uppercase font-black">Grade {scout.grade} • Swan Patrol</p>
+                        </div>
                       </div>
                       {scout.att.map((present, i) => (
                         <div key={i} className="col-span-2 flex justify-center">
-                          <button className="focus:outline-none">
+                          <button className="focus:outline-none transition-transform active:scale-90">
                             {present ? 
-                              <CheckCircle2 className="w-6 h-6 text-green-500" /> : 
-                              <Circle className="w-6 h-6 text-white/10 hover:text-white/30 transition-colors" />
+                              <CheckCircle2 className="w-8 h-8 text-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]" /> : 
+                              <Circle className="w-8 h-8 text-white/5 hover:text-white/20 transition-colors" />
                             }
                           </button>
                         </div>
@@ -135,17 +144,28 @@ export default function AttendancePage() {
                     </div>
                   ))}
 
-                  {isLeader && (
-                    <div className="flex gap-4 mt-8 pt-4">
-                      <Input 
-                        placeholder="Add new scout to patrol..." 
-                        className="rounded-2xl bg-black/40 border-white/10 h-12 flex-1 pl-6"
-                      />
-                      <Button size="icon" className="h-12 w-12 rounded-2xl bg-primary text-black">
-                        <Plus className="w-6 h-6" />
-                      </Button>
+                  <div className="pt-8 space-y-6">
+                    <div className="flex items-center gap-3 text-primary/60">
+                       <MessageSquare className="w-4 h-4" />
+                       <span className="text-[10px] font-black uppercase tracking-widest">Leadership Comments</span>
                     </div>
-                  )}
+                    <div className="p-6 rounded-[2rem] bg-white/[0.02] border border-white/5">
+                       <p className="text-[10px] text-muted-foreground uppercase leading-relaxed font-medium italic">
+                         "Excellent discipline this month. Week 4 absence for Sithum was due to District Trial." - JTL Asher
+                       </p>
+                    </div>
+                    {isLeader && (
+                      <div className="flex gap-4">
+                        <Input 
+                          placeholder="Type comment or add new scout..." 
+                          className="rounded-[2rem] bg-black/40 border-white/5 h-14 pl-8 text-xs font-medium"
+                        />
+                        <Button className="h-14 px-8 rounded-[2rem] bg-primary text-black font-black uppercase text-[10px] tracking-widest">
+                          Commit Update
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
