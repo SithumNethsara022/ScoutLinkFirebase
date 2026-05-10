@@ -1,135 +1,109 @@
-
 "use client";
 
-import { AUTHORITY_CHART } from '@/lib/mock-data';
+import { AUTHORITY_CHART, MOCK_SCOUTS } from '@/lib/mock-data';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Shield, User, ChevronRight, Phone, Mail } from 'lucide-react';
+import { Shield, User, ChevronRight, Phone, Mail, Users, Info } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AuthorityChartPage() {
   return (
-    <div className="space-y-12 pb-20 max-w-6xl mx-auto">
-      <header className="text-center space-y-4">
-        <h2 className="text-5xl font-black gold-text uppercase tracking-widest leading-none">Authority Chart</h2>
-        <p className="text-muted-foreground uppercase text-[10px] font-black tracking-[0.4em]">Interactive organizational hierarchy of the Golden Troop</p>
+    <div className="space-y-12 pb-24 max-w-7xl mx-auto">
+      <header className="text-center space-y-6">
+        <h2 className="text-5xl font-black gold-text uppercase tracking-widest leading-none drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]">Authorities Chart</h2>
+        <p className="text-muted-foreground uppercase text-[10px] font-black tracking-[0.4em] opacity-60">Complete Organizational Hierarchy of the 42nd Colombo Gold Troop</p>
       </header>
 
       <div className="space-y-16">
-        {/* Top Leadership */}
+        {/* Top Level: GSL, SL, MIC */}
         <section className="flex flex-col items-center space-y-12">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-3xl w-full">
-              <div className="glass-panel rounded-[3rem] p-8 text-center border-l-4 border-l-primary/50">
-                 <Shield className="w-10 h-10 text-primary mx-auto mb-4" />
-                 <h3 className="font-black text-xl gold-text uppercase tracking-tight">{AUTHORITY_CHART.gsl.name}</h3>
-                 <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black uppercase mt-2">{AUTHORITY_CHART.gsl.position}</Badge>
-              </div>
-              <div className="glass-panel rounded-[3rem] p-8 text-center border-l-4 border-l-primary/50">
-                 <Shield className="w-10 h-10 text-primary mx-auto mb-4" />
-                 <h3 className="font-black text-xl gold-text uppercase tracking-tight">{AUTHORITY_CHART.mic.name}</h3>
-                 <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black uppercase mt-2">{AUTHORITY_CHART.mic.position}</Badge>
-              </div>
-           </div>
+          <div className="flex gap-8 md:gap-24 items-center">
+            {/* GSL */}
+            <div className="glass-panel rounded-[2.5rem] p-6 text-center border-l-4 border-l-primary w-56 transform hover:scale-105 transition-all">
+              <p className="text-[8px] uppercase font-black text-muted-foreground mb-1 tracking-widest">Group Scout Leader</p>
+              <h3 className="font-black text-sm gold-text uppercase tracking-tight">{AUTHORITY_CHART.gsl.name}</h3>
+            </div>
 
-           <div className="w-px h-16 bg-gradient-to-b from-primary/50 to-transparent" />
-
-           <Link href={`/profile/${AUTHORITY_CHART.leader.id}`} className="w-full max-w-md group">
-             <div className="hero-section text-center p-10 hover:scale-105 transition-all duration-500 cursor-pointer">
-                <div className="w-20 h-20 rounded-[2rem] liquid-glass mx-auto mb-6 flex items-center justify-center border-2 border-primary/30 group-hover:rotate-6 transition-transform">
-                  <User className="w-10 h-10 text-primary" />
+            {/* Scout Leader */}
+            <Link href={`/profile/${AUTHORITY_CHART.leader.id}`} className="group">
+              <div className="hero-section text-center p-12 !rounded-[4rem] border-2 border-primary/40 hover:border-primary transition-all shadow-2xl scale-110">
+                <div className="w-16 h-16 rounded-[1.75rem] liquid-glass mx-auto mb-4 flex items-center justify-center border border-primary/30 group-hover:rotate-6 transition-transform">
+                  <User className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="font-black text-3xl gold-text uppercase tracking-tighter leading-none">{AUTHORITY_CHART.leader.name}</h3>
-                <Badge variant="outline" className="mt-4 border-primary/40 text-[10px] font-black uppercase tracking-widest px-6 py-2">{AUTHORITY_CHART.leader.position}</Badge>
-             </div>
-           </Link>
+                <h3 className="font-black text-2xl gold-text uppercase tracking-tighter leading-none">{AUTHORITY_CHART.leader.name}</h3>
+                <Badge variant="outline" className="mt-3 border-primary/40 text-[9px] font-black uppercase tracking-widest">{AUTHORITY_CHART.leader.position}</Badge>
+              </div>
+            </Link>
+
+            {/* MIC */}
+            <div className="glass-panel rounded-[2.5rem] p-6 text-center border-r-4 border-r-primary w-56 transform hover:scale-105 transition-all">
+              <p className="text-[8px] uppercase font-black text-muted-foreground mb-1 tracking-widest">Master in Charge</p>
+              <h3 className="font-black text-sm gold-text uppercase tracking-tight">{AUTHORITY_CHART.mic.name}</h3>
+            </div>
+          </div>
+
+          <div className="w-px h-16 bg-gradient-to-b from-primary/50 to-transparent" />
+
+          {/* ASLs */}
+          <div className="grid grid-cols-2 gap-8 w-full max-w-2xl">
+            {AUTHORITY_CHART.asls.map(asl => (
+              <Link href={`/profile/${asl.id}`} key={asl.id} className="glass-panel p-6 rounded-[3rem] text-center hover:bg-white/10 transition-all border-b-2 border-b-blue-500/30">
+                <p className="text-[8px] uppercase font-black text-muted-foreground mb-2">Assistant Scout Leader</p>
+                <h4 className="font-black text-sm uppercase tracking-tighter">{asl.name}</h4>
+              </Link>
+            ))}
+          </div>
         </section>
 
-        {/* ASLs & Instructors */}
+        {/* Instructors, STL, ASTL, Secretaries */}
+        <section className="space-y-8">
+          <div className="flex items-center gap-4 px-8">
+            <Shield className="w-5 h-5 text-amber-500" />
+            <h3 className="text-sm font-black gold-text uppercase tracking-widest">Instructional Staff & Special Roles</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {AUTHORITY_CHART.instructors.map(inst => (
+              <Link href={`/profile/${inst.id}`} key={inst.id} className="glass-panel p-6 rounded-[2.5rem] group hover:bg-white/10 transition-all">
+                <p className="text-[8px] font-black uppercase text-amber-500 mb-1">{inst.position}</p>
+                <h4 className="font-black text-xs uppercase tracking-tight mb-2 group-hover:text-primary transition-colors">{inst.name}</h4>
+                {inst.extra && <Badge variant="outline" className="text-[7px] font-black uppercase border-white/10">{inst.extra}</Badge>}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Sub-Troops & Patrols */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <Card className="glass-panel border-none rounded-[3.5rem] p-4">
-             <CardHeader className="pb-4">
-               <CardTitle className="text-sm font-black gold-text uppercase tracking-widest flex items-center gap-3">
-                 <Users className="w-6 h-6 text-blue-400" />
-                 Assistant Scout Leaders
-               </CardTitle>
-             </CardHeader>
-             <CardContent className="space-y-4">
-               {AUTHORITY_CHART.asls.map(asl => (
-                 <Link href={`/profile/${asl.id}`} key={asl.id}>
-                    <div className="flex justify-between items-center p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group">
-                      <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 rounded-2xl bg-black/40 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <User className="w-5 h-5 text-blue-400" />
-                         </div>
-                         <span className="font-black text-xs uppercase tracking-tighter">{asl.name}</span>
-                      </div>
-                      <Badge variant="outline" className="text-[8px] font-black uppercase border-white/10">{asl.position}</Badge>
+          {AUTHORITY_CHART.subTroops.map(st => (
+            <Card key={st.name} className="glass-panel border-none rounded-[4rem] p-4 bg-white/[0.02]">
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="text-2xl font-black gold-text uppercase tracking-tighter">{st.name}</CardTitle>
+                <p className="text-[10px] font-black uppercase text-muted-foreground mt-2 tracking-widest">STL: {st.leader}</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {st.patrols.map(p => (
+                  <div key={p.name} className="p-6 rounded-[2.5rem] bg-black/40 border border-white/5 space-y-4 hover:border-primary/20 transition-all">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                      <h5 className="font-black text-xs uppercase tracking-widest flex items-center gap-3">
+                        <ChevronRight className="w-4 h-4 text-primary" />
+                        {p.name}
+                      </h5>
                     </div>
-                 </Link>
-               ))}
-             </CardContent>
-          </Card>
-
-          <Card className="glass-panel border-none rounded-[3.5rem] p-4">
-             <CardHeader className="pb-4">
-               <CardTitle className="text-sm font-black gold-text uppercase tracking-widest flex items-center gap-3">
-                 <Shield className="w-6 h-6 text-amber-500" />
-                 Instructors & Staff
-               </CardTitle>
-             </CardHeader>
-             <CardContent className="space-y-4">
-               {AUTHORITY_CHART.instructors.map(inst => (
-                 <Link href={`/profile/${inst.id}`} key={inst.id}>
-                    <div className="flex justify-between items-center p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group">
-                      <div className="flex items-center gap-4">
-                         <div className="w-10 h-10 rounded-2xl bg-black/40 flex items-center justify-center">
-                            <User className="w-5 h-5 text-amber-500" />
-                         </div>
-                         <div>
-                            <p className="font-black text-xs uppercase tracking-tighter leading-none">{inst.name}</p>
-                            {inst.extra && <p className="text-[8px] uppercase font-bold text-primary mt-1">{inst.extra}</p>}
-                         </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 rounded-2xl bg-white/5 text-center">
+                        <p className="text-[8px] font-black uppercase text-muted-foreground mb-1">PL</p>
+                        <p className="text-[10px] font-black uppercase truncate">{p.leader}</p>
                       </div>
-                      <Badge variant="outline" className="text-[8px] font-black uppercase border-white/10">{inst.position}</Badge>
+                      <div className="p-4 rounded-2xl bg-white/5 text-center">
+                        <p className="text-[8px] font-black uppercase text-muted-foreground mb-1">APL</p>
+                        <p className="text-[10px] font-black uppercase truncate">{p.assistant}</p>
+                      </div>
                     </div>
-                 </Link>
-               ))}
-             </CardContent>
-          </Card>
-        </div>
-
-        {/* Sub-Troops Hierarchy */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-           {AUTHORITY_CHART.subTroops.map(st => (
-             <div key={st.name} className="space-y-6">
-                <div className="hero-section p-8 text-center !rounded-[3rem]">
-                   <h3 className="text-2xl font-black gold-text uppercase tracking-tighter leading-none">{st.name}</h3>
-                   <p className="text-[10px] font-black uppercase text-muted-foreground mt-3 tracking-widest">Sub Troop Leader: {st.leader}</p>
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                   {st.patrols.map(p => (
-                     <div key={p.name} className="glass-panel p-6 rounded-[2rem] border-none group hover:bg-white/[0.04] transition-all">
-                        <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
-                          <span className="font-black text-xs uppercase tracking-widest flex items-center gap-2">
-                            <ChevronRight className="w-4 h-4 text-primary" />
-                            {p.name} Patrol
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                           <div className="p-3 rounded-xl bg-black/20">
-                             <p className="text-[8px] uppercase font-black text-muted-foreground mb-1">PL</p>
-                             <p className="text-[10px] font-black uppercase truncate">{p.leader}</p>
-                           </div>
-                           <div className="p-3 rounded-xl bg-black/20">
-                             <p className="text-[8px] uppercase font-black text-muted-foreground mb-1">APL</p>
-                             <p className="text-[10px] font-black uppercase truncate">{p.assistant}</p>
-                           </div>
-                        </div>
-                     </div>
-                   ))}
-                </div>
-             </div>
-           ))}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </div>

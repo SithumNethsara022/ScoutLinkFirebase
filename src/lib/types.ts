@@ -1,4 +1,3 @@
-
 export type Role = 
   | 'Scout' 
   | 'Patrol Leader' 
@@ -23,8 +22,7 @@ export interface AwardProgress {
   hikeDone?: boolean;
   badgesDone?: boolean;
   passingDate?: string;
-  membershipNumber?: string; // Format: xx/xxxx/xx/(J or S)
-  necessaryBadges?: { name: string; passingDate: string }[];
+  membershipNumber?: string;
 }
 
 export interface ProficiencyBadge {
@@ -33,6 +31,16 @@ export interface ProficiencyBadge {
   type: 'Junior' | 'Senior';
   category: string;
   passingDate: string;
+}
+
+export interface EventParticipation {
+  id: string;
+  name: string;
+  date: string;
+  type: 'Troop' | 'District' | 'National' | 'International' | 'District Committee' | 'National Committee';
+  place: '1st' | '2nd' | '3rd' | '4th' | '5th' | 'Participation' | 'Above Minimum';
+  points: number;
+  confirmed: boolean;
 }
 
 export interface ScoutProfile {
@@ -51,33 +59,9 @@ export interface ScoutProfile {
   parentsNames: string;
   awards: AwardProgress[];
   badges: ProficiencyBadge[];
-  attendancePoints: number;
-  disciplinePoints: number;
-  eventPoints: number;
+  eventHistory: EventParticipation[];
   totalPoints: number;
-  profilePicUrl?: string;
-  committees?: string[];
+  patrolPoints: number;
+  subTroopPoints: number;
   status: 'Pending' | 'Approved';
-}
-
-export interface Report {
-  id: string;
-  title: string;
-  authorId: string;
-  dateOfEvent: string;
-  description: string;
-  documentUrl?: string;
-  createdAt: string;
-}
-
-export interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  authorId: string;
-  scope: 'Patrol' | 'SubTroop' | 'Troop';
-  targetId?: string; // Patrol ID or SubTroop ID
-  readBy: string[];
-  archivedBy: string[];
-  createdAt: string;
 }

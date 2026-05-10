@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -7,56 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Award, ShieldCheck, Info, CheckCircle2, AlertCircle, Search, Filter, Trash2, Users, Layers } from 'lucide-react';
+import { Award, ShieldCheck, Info, CheckCircle2, AlertCircle, Trash2, Layers, Calendar } from 'lucide-react';
 import { awardPrerequisiteAdvisor, AwardPrerequisiteAdvisorOutput } from '@/ai/flows/award-prerequisite-advisor';
 import { toast } from '@/hooks/use-toast';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { MOCK_SCOUTS } from '@/lib/mock-data';
 
-// Mock role for testing
-const USER_ROLE = 'Scout Leader'; 
-
 export default function BadgesAwardsPage() {
-  const [loading, setLoading] = useState(false);
   const [selectedAward, setSelectedAward] = useState<string>('');
   const [advice, setAdvice] = useState<AwardPrerequisiteAdvisorOutput | null>(null);
-  const [badgeCode, setBadgeCode] = useState('');
-  const [badgeType, setBadgeType] = useState<'Junior' | 'Senior' | ''>('');
-  
-  // Filters
-  const [gradeFilter, setGradeFilter] = useState<string>('all');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [passingDate, setPassingDate] = useState('');
 
-  const canRemoveBadge = ['Senior Troop Leader', 'Asst Senior Troop Leader', 'Scout Leader', 'Asst Scout Leader'].includes(USER_ROLE);
-
-  const filteredScouts = useMemo(() => {
-    return MOCK_SCOUTS.filter(scout => {
-      const matchesGrade = gradeFilter === 'all' || scout.grade === parseInt(gradeFilter);
-      const matchesRole = roleFilter === 'all' || scout.role === roleFilter;
-      const matchesSearch = scout.name.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesGrade && matchesRole && matchesSearch;
-    });
-  }, [gradeFilter, roleFilter, searchQuery]);
-
-  const scoutsByPatrol = useMemo(() => {
-    const groups: Record<string, typeof MOCK_SCOUTS> = {};
-    filteredScouts.forEach(s => {
-      const patrol = s.patrol || 'Unassigned';
-      if (!groups[patrol]) groups[patrol] = [];
-      groups[patrol].push(s);
-    });
-    return groups;
-  }, [filteredScouts]);
-
-  const handleCodeChange = (code: string) => {
-    setBadgeCode(code);
-    const c = code.toLowerCase();
-    if (c.includes('s')) setBadgeType('Senior');
-    else if (c.includes('j')) setBadgeType('Junior');
-    else setBadgeType('');
-  };
+  // Fixed award order
+  const AWARDS = ["Membership Award", "Scout Award", "Chief Commissioner's Award", "Prime Minister's Award", "President's Scout Award"];
 
   const handleCheckRequirements = async () => {
     if (!selectedAward) return;
@@ -64,216 +28,120 @@ export default function BadgesAwardsPage() {
     try {
       const result = await awardPrerequisiteAdvisor({
         awardName: selectedAward as any,
-        scoutProficiencyBadges: ['First Aid', 'Cook', 'Swimmer']
+        scoutProficiencyBadges: ['First Aid', 'Camper', 'Swimmer']
       });
       setAdvice(result);
     } catch (e) {
-      toast({ title: "Error", description: "Could not fetch advice." });
+      toast({ title: "Error", description: "Prerequisite check failed." });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-8 pb-10">
-      <header className="flex justify-between items-end">
-        <div>
-          <h2 className="text-3xl font-black gold-text uppercase tracking-widest leading-none">Badge & Award Ecosystem</h2>
-          <p className="text-muted-foreground uppercase text-[10px] font-black tracking-widest mt-2">Authenticated Troop Progression Track</p>
-        </div>
-        <div className="flex gap-4">
-          <div className="relative w-64">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Filter by name..." 
-              className="pl-12 rounded-2xl bg-black/20 border-white/5 h-12 text-[10px] uppercase font-bold"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
+    <div className="space-y-12 pb-24">
+      <header>
+        <h2 className="text-4xl font-black gold-text uppercase tracking-widest leading-none">Badge Work Ecosystem</h2>
+        <p className="text-muted-foreground uppercase text-[10px] font-black tracking-widest mt-4">Authenticated Troop Progression Hub</p>
       </header>
 
-      <Tabs defaultValue="tracker" className="w-full">
-        <TabsList className="bg-black/20 border border-white/5 p-1 rounded-2xl h-12 mb-8">
-          <TabsTrigger value="tracker" className="rounded-xl px-10 text-[10px] font-black uppercase">Troop Tracker</TabsTrigger>
-          <TabsTrigger value="eligibility" className="rounded-xl px-10 text-[10px] font-black uppercase">My Eligibility</TabsTrigger>
-          <TabsTrigger value="log" className="rounded-xl px-10 text-[10px] font-black uppercase">Log Activity</TabsTrigger>
+      <Tabs defaultValue="status" className="w-full">
+        <TabsList className="bg-black/20 border border-white/5 p-1 rounded-3xl h-16 mb-12">
+          <TabsTrigger value="status" className="rounded-2xl px-12 text-[10px] font-black uppercase">My Progression</TabsTrigger>
+          <TabsTrigger value="log" className="rounded-2xl px-12 text-[10px] font-black uppercase">Log New Entry</TabsTrigger>
+          <TabsTrigger value="troop" className="rounded-2xl px-12 text-[10px] font-black uppercase">Troop Overview</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="tracker" className="space-y-8">
-           <div className="flex gap-4">
-              <Select onValueChange={setGradeFilter}>
-                <SelectTrigger className="w-[180px] rounded-xl bg-black/20 border-white/5 h-11 text-[9px] uppercase font-black">
-                  <SelectValue placeholder="Grade: All" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Grade: All</SelectItem>
-                  {[6, 7, 8, 9, 10, 11, 12, 13].map(g => (
-                    <SelectItem key={g} value={g.toString()}>Grade {g}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select onValueChange={setRoleFilter}>
-                <SelectTrigger className="w-[180px] rounded-xl bg-black/20 border-white/5 h-11 text-[9px] uppercase font-black">
-                  <SelectValue placeholder="Role: All" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Role: All</SelectItem>
-                  <SelectItem value="Patrol Leader">Patrol Leader</SelectItem>
-                  <SelectItem value="Scout">Scout</SelectItem>
-                  <SelectItem value="Senior Scout">Senior Scout</SelectItem>
-                  <SelectItem value="Scout Leader">Scout Leader</SelectItem>
-                </SelectContent>
-              </Select>
-           </div>
-
-           {Object.entries(scoutsByPatrol).map(([patrol, scouts]) => (
-             <div key={patrol} className="space-y-4">
-                <h3 className="text-sm font-black gold-text uppercase tracking-widest flex items-center gap-3">
-                  <Users className="w-5 h-5" /> {patrol} Patrol
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {scouts.map(scout => (
-                    <Card key={scout.id} className="glass-panel border-none rounded-[2rem] p-6 hover:bg-white/5 transition-all">
-                       <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl border-2 border-primary/20 overflow-hidden shrink-0">
-                            <img src={`https://picsum.photos/seed/${scout.name}/100`} className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                             <p className="font-black text-xs uppercase tracking-tighter truncate">{scout.name}</p>
-                             <p className="text-[9px] uppercase font-bold text-muted-foreground">Grade {scout.grade} • {scout.role}</p>
-                          </div>
-                       </div>
-                       <div className="mt-4 flex gap-2 flex-wrap">
-                          {scout.awards.map((a, i) => (
-                            <Badge key={i} className="bg-primary/10 text-primary border-none text-[8px] uppercase font-black">{a.name}</Badge>
-                          ))}
-                          <Badge variant="outline" className="border-white/10 text-[8px] uppercase font-black">+{scout.badges.length} Badges</Badge>
-                       </div>
-                    </Card>
-                  ))}
-                </div>
-             </div>
-           ))}
-        </TabsContent>
-
-        <TabsContent value="eligibility">
-           <div className="max-w-2xl mx-auto">
-             <Card className="glass-panel border-none rounded-[2.5rem]">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-3 gold-text uppercase tracking-tight">
-                  <Award className="w-6 h-6" />
-                  Eligibility Advisor
-                </CardTitle>
-                <CardDescription className="text-[10px] uppercase font-bold tracking-widest">Target status: Instructors → Scout Leader → ADC → Passed.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+        <TabsContent value="status" className="space-y-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <Card className="lg:col-span-1 glass-panel border-none rounded-[3.5rem] p-8">
+              <CardTitle className="text-xl gold-text uppercase tracking-tight flex items-center gap-4 mb-8">
+                <Award className="w-8 h-8" /> Eligibility Advisor
+              </CardTitle>
+              <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Target Award</Label>
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground ml-2">Target Milestone</Label>
                   <Select onValueChange={setSelectedAward}>
-                    <SelectTrigger className="rounded-xl bg-black/20 border-white/5 h-12">
-                      <SelectValue placeholder="Choose Award" />
+                    <SelectTrigger className="rounded-2xl bg-black/20 border-white/5 h-14">
+                      <SelectValue placeholder="Select Award" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Scout Award">Scout Award</SelectItem>
-                      <SelectItem value="Chief Commissioner's Award">Chief Commissioner's Award</SelectItem>
-                      <SelectItem value="Prime Minister's Award">Prime Minister's Award</SelectItem>
-                      <SelectItem value="President's Scout Award">President's Scout Award</SelectItem>
+                      {AWARDS.map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="w-full h-12 rounded-2xl font-black uppercase tracking-widest bg-primary text-black" onClick={handleCheckRequirements} disabled={loading || !selectedAward}>
-                  {loading ? "Analyzing record..." : "Verify My Progress"}
+                <Button className="w-full h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-widest shadow-xl" onClick={handleCheckRequirements} disabled={loading}>
+                  {loading ? "Analyzing..." : "Verify Status"}
                 </Button>
+              </div>
+            </Card>
 
-                {advice && (
-                  <div className="space-y-4 pt-4 border-t border-white/5">
-                    {advice.requiredBadges.map((badge, idx) => (
-                      <div key={idx} className="flex items-start justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
-                        <div className="flex gap-4">
-                          {badge.isCompleted ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
-                          <div>
-                            <p className="font-black text-xs uppercase tracking-tighter">{badge.name}</p>
-                            <p className="text-[9px] text-muted-foreground uppercase font-bold">{badge.isCompleted ? 'Verified' : 'Action Required'}</p>
-                          </div>
+            <Card className="lg:col-span-2 glass-panel border-none rounded-[3.5rem] p-10">
+              <div className="space-y-8">
+                {advice ? (
+                  advice.requiredBadges.map((badge, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-6 rounded-[2.5rem] bg-white/[0.03] border border-white/5 group">
+                      <div className="flex gap-6 items-center">
+                        {badge.isCompleted ? <CheckCircle2 className="w-6 h-6 text-green-500" /> : <AlertCircle className="w-6 h-6 text-red-500" />}
+                        <div>
+                          <p className="font-black text-sm uppercase tracking-tighter">{badge.name}</p>
+                          <p className="text-[9px] uppercase font-black text-muted-foreground mt-1">{badge.notes || 'Requirement Pending'}</p>
                         </div>
-                        {canRemoveBadge && badge.isCompleted && (
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-full">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        )}
                       </div>
-                    ))}
+                      <Badge variant="outline" className={badge.isCompleted ? "border-green-500/40 text-green-500" : "border-red-500/40 text-red-500"}>
+                        <span className="text-[8px] font-black uppercase px-2">{badge.isCompleted ? 'PASSED' : 'REQUIRED'}</span>
+                      </Badge>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-20 opacity-30">
+                    <Layers className="w-16 h-16 mx-auto mb-6" />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Select an award to view prerequisites</p>
                   </div>
                 )}
-              </CardContent>
+              </div>
             </Card>
-           </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="log">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="glass-panel border-none rounded-[2.5rem]">
-                <CardHeader>
-                  <CardTitle className="text-xl flex items-center gap-3 text-blue-400 uppercase tracking-tight">
-                    <Info className="w-6 h-6" />
-                    Badge Logging
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                   <div className="space-y-2">
-                     <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Badge Code</Label>
-                     <Input 
-                      placeholder="e.g. SB-10 (Senior) or JG-2 (Junior)" 
-                      className="rounded-xl bg-black/20 border-white/10 h-12"
-                      value={badgeCode}
-                      onChange={(e) => handleCodeChange(e.target.value)}
-                     />
-                     {badgeType && (
-                       <p className="text-[10px] font-black uppercase tracking-widest text-primary mt-1">
-                         Auto-detected: {badgeType} Division
-                       </p>
-                     )}
-                   </div>
-                   <div className="space-y-2">
-                     <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">International/Local Name</Label>
-                     <Input placeholder="e.g. Amateur Radio" className="rounded-xl bg-black/20 border-white/10 h-12" />
-                   </div>
-                   <div className="space-y-2">
-                     <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Category</Label>
-                     <Select>
-                       <SelectTrigger className="rounded-xl bg-black/20 border-white/10 h-12">
-                         <SelectValue placeholder="Category" />
-                       </SelectTrigger>
-                       <SelectContent>
-                         <SelectItem value="Public Service">Public Service</SelectItem>
-                         <SelectItem value="Camp Craft">Camp Craft</SelectItem>
-                         <SelectItem value="Sports">Sports</SelectItem>
-                         <SelectItem value="International">International</SelectItem>
-                       </SelectContent>
-                     </Select>
-                   </div>
-                   <Button variant="outline" className="w-full h-12 rounded-2xl border-primary/20 text-primary hover:bg-primary/10 uppercase font-black tracking-widest">
-                     Request Validation
-                   </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-panel border-none rounded-[2.5rem] bg-amber-500/5">
-                 <CardHeader>
-                    <CardTitle className="text-xl text-amber-500 uppercase tracking-tight flex items-center gap-3">
-                      <Layers className="w-6 h-6" /> Permission Rules
-                    </CardTitle>
-                 </CardHeader>
-                 <CardContent className="space-y-4 text-[10px] uppercase font-black text-muted-foreground leading-relaxed">
-                    <p>• Scouts may enter their own badge completions.</p>
-                    <p>• Patrol Leaders can enter badges for their members.</p>
-                    <p className="text-amber-500">• Only Senior Troop Leader or higher can remove verified entries.</p>
-                    <p>• International badges must be authenticated by the Badge Secretary.</p>
-                 </CardContent>
-              </Card>
-           </div>
+          <div className="max-w-3xl mx-auto">
+            <Card className="glass-panel border-none rounded-[4rem] p-12 space-y-10">
+              <CardTitle className="text-2xl gold-text uppercase tracking-tight flex items-center gap-4">
+                <ShieldCheck className="w-10 h-10" /> Log Badge Completion
+              </CardTitle>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground ml-2">Badge / Award Name</Label>
+                  <Input placeholder="e.g. First Aid" className="rounded-2xl bg-black/20 border-white/5 h-16 px-6 font-black uppercase" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground ml-2">Passing Date *</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input type="date" className="pl-16 rounded-2xl bg-black/20 border-white/5 h-16 font-black" required />
+                  </div>
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground ml-2">Badge Group</Label>
+                  <Select>
+                    <SelectTrigger className="rounded-2xl bg-black/20 border-white/5 h-16">
+                      <SelectValue placeholder="Select Group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">Public Service Group</SelectItem>
+                      <SelectItem value="camp">Camp Craft Group</SelectItem>
+                      <SelectItem value="edu">Education Group</SelectItem>
+                      <SelectItem value="award">Major Award Status</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button className="w-full h-16 rounded-3xl bg-primary text-black font-black uppercase tracking-widest shadow-2xl">
+                Submit for Authentication
+              </Button>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
