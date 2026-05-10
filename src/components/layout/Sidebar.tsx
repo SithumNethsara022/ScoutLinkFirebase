@@ -15,7 +15,8 @@ import {
   X,
   MessageSquare,
   CalendarCheck,
-  Video
+  Video,
+  Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,8 @@ const navItems = [
   { label: 'Events', icon: Calendar, href: '/events' },
   { label: 'Appointments', icon: CalendarCheck, href: '/appointments' },
   { label: 'Messages', icon: MessageSquare, href: '/messages' },
+  { label: 'Meetings', icon: Video, href: '/meetings' },
+  { label: 'Committees', icon: Layers, href: '/committees' },
   { label: 'Authority Chart', icon: Users, href: '/org-chart' },
   { label: 'Leaderboard', icon: TrendingUp, href: '/leaderboard' },
 ];
@@ -37,7 +40,6 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Skip sidebar on onboarding
   if (pathname === '/onboarding') return null;
 
   return (
@@ -61,7 +63,7 @@ export function Sidebar() {
             <h1 className="text-xl font-black tracking-tighter gold-text uppercase">ScoutLink</h1>
           </div>
 
-          <nav className="flex-1 space-y-1">
+          <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
             {navItems.map((item) => (
               <Link 
                 key={item.href} 
@@ -78,7 +80,7 @@ export function Sidebar() {
                   "w-5 h-5",
                   pathname === item.href ? "text-black" : "text-muted-foreground group-hover:text-primary"
                 )} />
-                <span className="text-xs uppercase tracking-widest">{item.label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
               </Link>
             ))}
           </nav>
@@ -89,7 +91,7 @@ export function Sidebar() {
                 <img src="https://picsum.photos/seed/user1/100" alt="Avatar" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-black truncate gold-text uppercase">Asher Quinn</p>
+                <p className="text-[10px] font-black truncate gold-text uppercase">Asher Quinn</p>
                 <p className="text-[9px] text-muted-foreground truncate uppercase font-bold">Scout Leader</p>
               </div>
             </div>

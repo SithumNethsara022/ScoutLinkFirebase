@@ -1,7 +1,8 @@
+
 export type Role = 'Scout' | 'Senior Scout' | 'Instructor' | 'Asst Scout Leader' | 'Scout Leader' | 'Admin';
 
-export type SubTroop = 'Sub Troop A' | 'Sub Troop B' | 'Sub Troop C' | 'Sub Troop D';
-export type Patrol = 'Tiger' | 'Eagle' | 'Cobra' | 'Woodpecker' | 'Lion' | 'Wolf' | 'Panther' | 'Rhino';
+export type SubTroop = 'Gold I' | 'Gold II' | 'Gold III' | 'Gold IV';
+export type Patrol = 'Kingfishers' | 'Eagles' | 'Seagulls' | 'Woodpeckers' | 'Parrots' | 'Salalihini' | 'Buzzards' | 'Hawks' | 'Falcons' | 'Swans' | 'Peacocks' | 'Flamingo';
 
 export interface Award {
   name: string;
@@ -10,6 +11,8 @@ export interface Award {
 
 export interface ProficiencyBadge {
   name: string;
+  code: string;
+  type: 'Junior' | 'Senior';
   category: string;
   passingDate: string;
 }
@@ -31,6 +34,7 @@ export interface ScoutProfile {
   disciplinePoints: number;
   eventPoints: number;
   totalPoints: number;
+  committees?: string[];
 }
 
 export type EventType = 
@@ -48,12 +52,21 @@ export interface CalendarEvent {
   type: EventType;
 }
 
-export interface ParticipationRecord {
+export interface Meeting {
   id: string;
-  scoutId: string;
-  eventName: string;
-  date: string;
-  place: '1st' | '2nd' | '3rd' | '4th' | '5th' | 'participation' | 'above minimum';
-  type: EventType;
-  confirmed: boolean;
+  title: string;
+  hostId: string;
+  scheduledAt: string;
+  duration: number;
+  reason: string;
+  attendees: string[];
+  status: 'Scheduled' | 'Live' | 'Ended';
+}
+
+export interface Committee {
+  id: string;
+  name: string;
+  chairmanId: string;
+  members: string[];
+  approved: boolean;
 }
