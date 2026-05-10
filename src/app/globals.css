@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,20 +24,7 @@
     --border: 160 30% 15%;
     --input: 160 30% 15%;
     --ring: 46 75% 50%;
-    --chart-1: 46 75% 50%;
-    --chart-2: 160 40% 50%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 1rem;
-    --sidebar-background: 160 50% 3%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 46 75% 50%;
-    --sidebar-primary-foreground: 160 50% 5%;
-    --sidebar-accent: 160 30% 10%;
-    --sidebar-accent-foreground: 46 75% 50%;
-    --sidebar-border: 160 30% 12%;
-    --sidebar-ring: 46 75% 50%;
+    --radius: 1.25rem;
   }
 }
 
@@ -45,20 +33,40 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 .gold-text {
-  color: hsl(var(--primary));
+  @apply text-primary font-bold;
+}
+
+/* Enhanced Liquid Glass Effect */
+.glass-panel {
+  @apply bg-white/5 backdrop-blur-[24px] border border-white/10 shadow-2xl;
+  background-image: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent);
+}
+
+.liquid-glass {
+  @apply bg-white/10 backdrop-blur-[32px] border border-white/20 shadow-inner;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.scout-gradient {
+  background: linear-gradient(135deg, #0a1f14 0%, #14331f 100%);
 }
 
 .action-card {
-  @apply bg-[#0d281a] border-none hover:bg-[#14331f] transition-colors cursor-pointer rounded-2xl p-6 flex flex-col items-start gap-4;
+  @apply liquid-glass hover:bg-white/15 transition-all duration-300 cursor-pointer p-6 flex flex-col items-start gap-4 rounded-[2rem];
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #14331f 0%, #0a1f14 100%);
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  @apply scout-gradient border border-primary/20 p-8 rounded-[2.5rem] relative overflow-hidden;
+}
+
+.hero-section::before {
+  content: '';
+  @apply absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L33 27L60 30L33 33L30 60L27 33L0 30L27 27Z' fill='%23d4af37' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -14,94 +15,98 @@ import {
   Bell,
   User,
   Shield,
-  AlertCircle
+  AlertCircle,
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 const actions = [
-  { title: 'Attendance', desc: 'Mark & view attendance', icon: ClipboardCheck, color: 'text-green-500', href: '/attendance' },
-  { title: 'Programmes', desc: 'Weekly programmes', icon: BookOpen, color: 'text-blue-500', href: '#' },
-  { title: 'Badge Works', desc: 'Awards & badges', icon: Award, color: 'text-yellow-500', href: '/badges' },
-  { title: 'Discipline', desc: 'Discipline issues', icon: AlertTriangle, color: 'text-red-500', href: '#' },
-  { title: 'Appointments', desc: 'Interview bookings & hikes', icon: MessageSquare, color: 'text-purple-500', href: '#' },
-  { title: 'Calendar', desc: 'Events & schedule', icon: Calendar, color: 'text-cyan-500', href: '/events' },
-  { title: 'Messages', desc: 'Chat with scouts', icon: MessageCircle, color: 'text-green-400', href: '#' },
-  { title: 'Meetings', desc: 'Schedule & join meetings', icon: Video, color: 'text-blue-400', href: '#' },
+  { title: 'Attendance', desc: 'Monthly tracker', icon: ClipboardCheck, color: 'text-green-500', href: '/attendance' },
+  { title: 'Programmes', desc: 'Patrol weekly plans', icon: BookOpen, color: 'text-blue-500', href: '#' },
+  { title: 'Badge Works', desc: 'Awards & Proficiency', icon: Award, color: 'text-yellow-500', href: '/badges' },
+  { title: 'Discipline', desc: 'Report issues', icon: AlertTriangle, color: 'text-red-500', href: '#' },
+  { title: 'Appointments', desc: 'Interview bookings', icon: MessageSquare, color: 'text-purple-500', href: '#' },
+  { title: 'Calendar', desc: 'Troop schedule', icon: Calendar, color: 'text-cyan-500', href: '/events' },
+  { title: 'Committees', desc: 'Manage committees', icon: Users, color: 'text-emerald-400', href: '/org-chart' },
+  { title: 'Meetings', desc: 'Troop virtual meet', icon: Video, color: 'text-blue-400', href: '#' },
 ];
 
 export default function Home() {
   return (
     <div className="space-y-8 pb-20">
-      {/* Top Header Bar */}
       <header className="flex items-center justify-between py-4">
-        <h1 className="text-xl font-bold tracking-widest gold-text uppercase">42nd Colombo Gold Troop</h1>
+        <div className="flex flex-col">
+          <h1 className="text-xl font-black tracking-[0.2em] gold-text uppercase">42nd Colombo Gold Troop</h1>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Leading Excellence Since 1920</p>
+        </div>
         <div className="flex items-center gap-4">
-          <button className="p-2 hover:bg-white/5 rounded-full transition-colors">
+          <button className="p-2 liquid-glass rounded-full transition-colors relative">
             <Bell className="w-5 h-5 text-muted-foreground" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-background" />
           </button>
-          <button className="p-1.5 border border-muted/50 rounded-full hover:bg-white/5 transition-colors">
+          <button className="p-1.5 liquid-glass rounded-full hover:bg-white/10 transition-colors">
             <User className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
       </header>
 
-      {/* Hero Welcome Section */}
-      <section className="hero-section rounded-2xl p-8 flex items-center gap-6">
-        <div className="w-16 h-16 rounded-full border-2 border-primary/30 flex items-center justify-center bg-primary/5">
-          <Shield className="w-8 h-8 text-primary" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold gold-text uppercase tracking-wide">Welcome, Sithum Nethsara</h2>
-          <p className="text-sm text-muted-foreground/80 mt-1">
-            Assistant Sub Troop Leader • Swans • Gold IV • Grade 10
-          </p>
+      <section className="hero-section group">
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+          <div className="w-24 h-24 rounded-[2rem] liquid-glass flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-500">
+            <Shield className="w-12 h-12 text-primary" />
+          </div>
+          <div className="text-center md:text-left">
+            <h2 className="text-3xl font-black gold-text uppercase tracking-tight">Welcome, Sithum Nethsara</h2>
+            <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-3">
+              <span className="text-[11px] font-bold px-3 py-1 rounded-full liquid-glass uppercase tracking-tighter">Assistant Sub Troop Leader</span>
+              <span className="text-[11px] font-bold px-3 py-1 rounded-full liquid-glass uppercase tracking-tighter">Swans • Gold IV</span>
+              <span className="text-[11px] font-bold px-3 py-1 rounded-full liquid-glass uppercase tracking-tighter text-primary">Grade 10</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Action Grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {actions.map((action, i) => (
           <Link key={i} href={action.href}>
-            <div className="action-card group h-full">
-              <action.icon className={cn("w-8 h-8", action.color)} />
+            <div className="action-card group">
+              <div className={cn("p-4 rounded-3xl bg-black/40", action.color)}>
+                <action.icon className="w-8 h-8" />
+              </div>
               <div>
-                <h3 className="font-bold uppercase tracking-widest text-sm mb-1">{action.title}</h3>
-                <p className="text-[11px] text-muted-foreground leading-tight">{action.desc}</p>
+                <h3 className="font-black uppercase tracking-widest text-xs mb-1 group-hover:text-primary transition-colors">{action.title}</h3>
+                <p className="text-[10px] text-muted-foreground leading-tight font-medium">{action.desc}</p>
               </div>
             </div>
           </Link>
         ))}
       </section>
 
-      {/* Re-integrated Leaderboard and Announcements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-[#0d281a] border-none rounded-2xl overflow-hidden">
-            <div className="h-1 bg-primary" />
+          <Card className="glass-panel rounded-[2.5rem] overflow-hidden border-none">
+            <div className="h-1.5 bg-primary w-full" />
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2 gold-text uppercase tracking-widest">
+              <CardTitle className="text-sm flex items-center gap-2 gold-text uppercase tracking-[0.2em] font-black">
                 <AlertCircle className="w-5 h-5" />
                 Latest Announcements
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 rounded-xl bg-white/5 border-l-4 border-primary">
-                <h4 className="font-semibold mb-1 text-sm">Cantlay Challenge Shield 2024</h4>
-                <p className="text-xs text-muted-foreground mb-2">Registration is now open for all patrols. Ensure your patrol count is above 4 members.</p>
-                <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-tighter">
-                  <span>Posted by Admin</span>
-                  <span>2 hours ago</span>
+              {[
+                { title: 'Cantlay Challenge Shield 2024', desc: 'Registration is open for all patrols. Above 4 members required.', poster: 'Admin', color: 'border-primary' },
+                { title: 'Proficiency Badge Class', desc: 'Pioneer sessions start this Saturday at 0900 hrs.', poster: 'Instructor Sophie', color: 'border-blue-500' }
+              ].map((ann, i) => (
+                <div key={i} className={cn("p-5 rounded-3xl bg-white/5 border-l-4 transition-transform hover:translate-x-1 cursor-default", ann.color)}>
+                  <h4 className="font-bold mb-1 text-sm">{ann.title}</h4>
+                  <p className="text-xs text-muted-foreground mb-3 font-medium">{ann.desc}</p>
+                  <div className="flex justify-between items-center text-[9px] text-muted-foreground uppercase tracking-widest font-bold">
+                    <span>Posted by {ann.poster}</span>
+                    <span>{i === 0 ? '2 hours ago' : 'Yesterday'}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="p-4 rounded-xl bg-white/5 border-l-4 border-blue-500">
-                <h4 className="font-semibold mb-1 text-sm">New Proficiency Badge Class</h4>
-                <p className="text-xs text-muted-foreground mb-2">Pioneer and Backwoodsman sessions start this Saturday at 0900 hrs.</p>
-                <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-tighter">
-                  <span className="text-blue-400">Posted by Instructor Sophie</span>
-                  <span>Yesterday</span>
-                </div>
-              </div>
+              ))}
             </CardContent>
           </Card>
         </div>

@@ -1,0 +1,99 @@
+
+{
+  "entities": {
+    "ScoutProfile": {
+      "title": "Scout Profile",
+      "description": "Full profile for a scout including badge progress, position, and grade.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "birthday": { "type": "string", "format": "date" },
+        "grade": { "type": "number" },
+        "subTroop": { "type": "string", "enum": ["Gold I", "Gold II", "Gold III", "Gold IV"] },
+        "patrol": { "type": "string" },
+        "position": { "type": "string" },
+        "role": { "type": "string" },
+        "profilePicUrl": { "type": "string" },
+        "awards": {
+          "type": "object",
+          "properties": {
+            "Membership": { "$ref": "#/entities/AwardStatus" },
+            "Scout Award": { "$ref": "#/entities/AwardStatus" },
+            "Chief Commissioner's": { "$ref": "#/entities/AwardStatus" },
+            "Prime Minister's": { "$ref": "#/entities/AwardStatus" },
+            "President's Scout": { "$ref": "#/entities/AwardStatus" }
+          }
+        },
+        "proficiencyBadges": {
+          "type": "array",
+          "items": { "$ref": "#/entities/ProficiencyBadge" }
+        },
+        "totalPoints": { "type": "number" }
+      },
+      "required": ["name", "email", "birthday", "patrol", "position"]
+    },
+    "AwardStatus": {
+      "title": "Award Status",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["Not Started", "Test Passing", "Instructor Interview Pending", "Scout Leader Interview Pending", "ADC Interview Pending", "Passed"] },
+        "hikeDone": { "type": "boolean" },
+        "badgesDone": { "type": "boolean" }
+      }
+    },
+    "ProficiencyBadge": {
+      "title": "Proficiency Badge",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["Junior", "Senior"] },
+        "category": { "type": "string" },
+        "passedDate": { "type": "string" }
+      }
+    },
+    "DisciplineIssue": {
+      "title": "Discipline Issue",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "scoutId": { "type": "string" },
+        "scoutName": { "type": "string" },
+        "description": { "type": "string" },
+        "severity": { "type": "string", "enum": ["Yellow", "Orange", "Red"] },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "Meeting": {
+      "title": "Meeting",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "hostId": { "type": "string" },
+        "scheduledAt": { "type": "string" },
+        "duration": { "type": "number" },
+        "reason": { "type": "string" },
+        "attendees": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["Scheduled", "Live", "Ended"] }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "ScoutProfile",
+      "description": "Scout user profiles"
+    },
+    "/disciplineIssues/{issueId}": {
+      "schema": "DisciplineIssue",
+      "description": "Troop discipline records"
+    },
+    "/meetings/{meetingId}": {
+      "schema": "Meeting",
+      "description": "Scheduled and live meetings"
+    }
+  }
+}
