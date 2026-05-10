@@ -18,7 +18,8 @@ import {
   Video,
   Layers,
   ShieldAlert,
-  BookOpen
+  BookOpen,
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
   { label: 'My Profile', icon: UserCircle, href: '/profile/1' },
   { label: 'Attendance', icon: ClipboardCheck, href: '/attendance' },
+  { label: 'Reports', icon: FileText, href: '/reports' },
   { label: 'Programmes', icon: BookOpen, href: '/programmes' },
   { label: 'Badges & Awards', icon: Award, href: '/badges' },
   { label: 'Discipline', icon: ShieldAlert, href: '/discipline' },
