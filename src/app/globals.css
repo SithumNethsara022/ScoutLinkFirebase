@@ -4,39 +4,39 @@
 
 @layer base {
   :root {
-    --background: 155 24% 16%;
+    --background: 160 50% 4%;
     --foreground: 0 0% 98%;
-    --card: 158 22% 23%;
+    --card: 160 40% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 158 22% 23%;
+    --popover: 160 40% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 46 65% 52%;
-    --primary-foreground: 155 24% 10%;
-    --secondary: 158 22% 30%;
+    --primary: 46 75% 50%;
+    --primary-foreground: 160 50% 5%;
+    --secondary: 160 30% 12%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 158 22% 20%;
-    --muted-foreground: 158 10% 70%;
-    --accent: 46 65% 52%;
-    --accent-foreground: 155 24% 10%;
+    --muted: 160 20% 10%;
+    --muted-foreground: 160 10% 60%;
+    --accent: 46 75% 50%;
+    --accent-foreground: 160 50% 5%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 158 22% 35%;
-    --input: 158 22% 35%;
-    --ring: 46 65% 52%;
-    --chart-1: 46 65% 52%;
-    --chart-2: 158 40% 50%;
+    --border: 160 30% 15%;
+    --input: 160 30% 15%;
+    --ring: 46 75% 50%;
+    --chart-1: 46 75% 50%;
+    --chart-2: 160 40% 50%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.75rem;
-    --sidebar-background: 158 22% 18%;
+    --radius: 1rem;
+    --sidebar-background: 160 50% 3%;
     --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 46 65% 52%;
-    --sidebar-primary-foreground: 155 24% 10%;
-    --sidebar-accent: 158 22% 30%;
-    --sidebar-accent-foreground: 46 65% 52%;
-    --sidebar-border: 158 22% 25%;
-    --sidebar-ring: 46 65% 52%;
+    --sidebar-primary: 46 75% 50%;
+    --sidebar-primary-foreground: 160 50% 5%;
+    --sidebar-accent: 160 30% 10%;
+    --sidebar-accent-foreground: 46 75% 50%;
+    --sidebar-border: 160 30% 12%;
+    --sidebar-ring: 46 75% 50%;
   }
 }
 
@@ -54,6 +54,11 @@
   color: hsl(var(--primary));
 }
 
-.forest-gradient {
-  background: linear-gradient(135deg, hsl(158 22% 23%), hsl(155 24% 16%));
+.action-card {
+  @apply bg-[#0d281a] border-none hover:bg-[#14331f] transition-colors cursor-pointer rounded-2xl p-6 flex flex-col items-start gap-4;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #14331f 0%, #0a1f14 100%);
+  border: 1px solid rgba(212, 175, 55, 0.1);
 }

@@ -3,114 +3,100 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Leaderboard } from '@/components/dashboard/Leaderboard';
 import { 
-  BadgeCheck, 
-  Users, 
+  ClipboardCheck, 
+  BookOpen, 
+  Award, 
+  AlertTriangle, 
+  MessageSquare, 
   Calendar, 
-  AlertCircle,
-  TrendingUp,
-  Clock
+  MessageCircle, 
+  Video,
+  Bell,
+  User,
+  Shield,
+  AlertCircle
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const actions = [
+  { title: 'Attendance', desc: 'Mark & view attendance', icon: ClipboardCheck, color: 'text-green-500' },
+  { title: 'Programmes', desc: 'Weekly programmes', icon: BookOpen, color: 'text-blue-500' },
+  { title: 'Badge Works', desc: 'Awards & badges', icon: Award, color: 'text-yellow-500' },
+  { title: 'Discipline', desc: 'Discipline issues', icon: AlertTriangle, color: 'text-red-500' },
+  { title: 'Appointments', desc: 'Interview bookings & hikes', icon: MessageSquare, color: 'text-purple-500' },
+  { title: 'Calendar', desc: 'Events & schedule', icon: Calendar, color: 'text-cyan-500' },
+  { title: 'Messages', desc: 'Chat with scouts', icon: MessageCircle, color: 'text-green-400' },
+  { title: 'Meetings', desc: 'Schedule & join meetings', icon: Video, color: 'text-blue-400' },
+];
 
 export default function Home() {
   return (
-    <div className="space-y-8 pb-10">
-      <header className="space-y-2">
-        <h2 className="text-3xl font-bold gold-text">Welcome back, Asher!</h2>
-        <p className="text-muted-foreground">Here's what's happening in the Golden Troop today.</p>
+    <div className="space-y-8 pb-20">
+      {/* Top Header Bar */}
+      <header className="flex items-center justify-between py-4">
+        <h1 className="text-xl font-bold tracking-widest gold-text uppercase">42nd Colombo Gold Troop</h1>
+        <div className="flex items-center gap-4">
+          <button className="p-2 hover:bg-white/5 rounded-full transition-colors">
+            <Bell className="w-5 h-5 text-muted-foreground" />
+          </button>
+          <button className="p-1.5 border border-muted/50 rounded-full hover:bg-white/5 transition-colors">
+            <User className="w-5 h-5 text-muted-foreground" />
+          </button>
+        </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-card/50 border-border/40">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Troop Attendance</CardTitle>
-            <Clock className="w-4 h-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">92%</div>
-            <p className="text-xs text-muted-foreground mt-1">+4% from last month</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-card/50 border-border/40">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Awards Pending</CardTitle>
-            <BadgeCheck className="w-4 h-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-muted-foreground mt-1">2 Prime Minister's Awards</p>
-          </CardContent>
-        </Card>
+      {/* Hero Welcome Section */}
+      <section className="hero-section rounded-2xl p-8 flex items-center gap-6">
+        <div className="w-16 h-16 rounded-full border-2 border-primary/30 flex items-center justify-center bg-primary/5">
+          <Shield className="w-8 h-8 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold gold-text uppercase tracking-wide">Welcome, Sithum Nethsara</h2>
+          <p className="text-sm text-muted-foreground/80 mt-1">
+            Assistant Sub Troop Leader • Swans • Gold IV • Grade 10
+          </p>
+        </div>
+      </section>
 
-        <Card className="bg-card/50 border-border/40">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Active Scouts</CardTitle>
-            <Users className="w-4 h-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">48</div>
-            <p className="text-xs text-muted-foreground mt-1">Across 4 sub-troops</p>
-          </CardContent>
-        </Card>
+      {/* Action Grid */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {actions.map((action, i) => (
+          <div key={i} className="action-card group">
+            <action.icon className={cn("w-8 h-8", action.color)} />
+            <div>
+              <h3 className="font-bold uppercase tracking-widest text-sm mb-1">{action.title}</h3>
+              <p className="text-[11px] text-muted-foreground leading-tight">{action.desc}</p>
+            </div>
+          </div>
+        ))}
+      </section>
 
-        <Card className="bg-card/50 border-border/40">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Upcoming Events</CardTitle>
-            <Calendar className="w-4 h-4 text-amber-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground mt-1">Next: Job Week (12 May)</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Re-integrated Leaderboard and Announcements */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-card border-border/40 overflow-hidden">
-            <div className="h-2 bg-primary" />
+          <Card className="bg-[#0d281a] border-none rounded-2xl overflow-hidden">
+            <div className="h-1 bg-primary" />
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
+              <CardTitle className="text-lg flex items-center gap-2 gold-text uppercase tracking-widest">
+                <AlertCircle className="w-5 h-5" />
                 Latest Announcements
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 rounded-lg bg-muted/20 border-l-4 border-primary">
-                <h4 className="font-semibold mb-1">Cantlay Challenge Shield 2024</h4>
-                <p className="text-sm text-muted-foreground mb-2">Registration is now open for all patrols. Ensure your patrol count is above 4 members.</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-primary/80">Posted by Admin</span>
-                  <span className="text-xs text-muted-foreground">2 hours ago</span>
+              <div className="p-4 rounded-xl bg-white/5 border-l-4 border-primary">
+                <h4 className="font-semibold mb-1 text-sm">Cantlay Challenge Shield 2024</h4>
+                <p className="text-xs text-muted-foreground mb-2">Registration is now open for all patrols. Ensure your patrol count is above 4 members.</p>
+                <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-tighter">
+                  <span>Posted by Admin</span>
+                  <span>2 hours ago</span>
                 </div>
               </div>
-              <div className="p-4 rounded-lg bg-muted/20 border-l-4 border-blue-500">
-                <h4 className="font-semibold mb-1">New Proficiency Badge Class</h4>
-                <p className="text-sm text-muted-foreground mb-2">Pioneer and Backwoodsman sessions start this Saturday at 0900 hrs.</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-blue-400">Posted by Instructor Sophie</span>
-                  <span className="text-xs text-muted-foreground">Yesterday</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border/40">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-green-500" />
-                Recent Performance Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground italic mb-4">"Sub Troop A has shown exceptional discipline this month with zero negative points recorded. Average individual attendance is at an all-time high of 98%."</p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span>Tiger Patrol</span>
-                  <span className="gold-text">Best Patrol Candidate</span>
-                </div>
-                <div className="w-full bg-muted h-1 rounded-full overflow-hidden">
-                  <div className="bg-primary h-full" style={{ width: '85%' }} />
+              <div className="p-4 rounded-xl bg-white/5 border-l-4 border-blue-500">
+                <h4 className="font-semibold mb-1 text-sm">New Proficiency Badge Class</h4>
+                <p className="text-xs text-muted-foreground mb-2">Pioneer and Backwoodsman sessions start this Saturday at 0900 hrs.</p>
+                <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-tighter">
+                  <span className="text-blue-400">Posted by Instructor Sophie</span>
+                  <span>Yesterday</span>
                 </div>
               </div>
             </CardContent>
