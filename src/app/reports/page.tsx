@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  FileText, Plus, Search, X, Upload, Megaphone, Bell, 
+  FileText, Plus, X, Upload, Megaphone, Bell, 
   ChevronLeft, MessageSquare 
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -16,7 +16,6 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
-// Mock User Data for testing
 const USER = {
   id: '1',
   name: 'Asher Quinn',
@@ -29,7 +28,6 @@ export default function ReportsPage() {
   const [showAddAnnouncement, setShowAddAnnouncement] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Permissions
   const isLeader = ['Patrol Leader', 'Sub Troop Leader', 'Assistant Sub Troop Leader', 'Junior Troop Leader', 'Assistant Junior Troop Leader', 'Senior Scout', 'Instructor', 'Senior Troop Leader', 'Assistant Senior Troop Leader', 'Assistant Scout Leader', 'Scout Leader'].includes(USER.role);
   const canEnterReport = ['Assistant Sub Troop Leader', 'Junior Troop Leader', 'Assistant Junior Troop Leader', 'Senior Scout', 'Instructor', 'Senior Troop Leader', 'Assistant Senior Troop Leader', 'Assistant Scout Leader', 'Scout Leader'].includes(USER.role);
 
@@ -51,7 +49,6 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-8 pb-20">
-      {/* Top Header - Responsive */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <Link href="/" className="md:hidden">
@@ -77,7 +74,6 @@ export default function ReportsPage() {
         </div>
       </header>
 
-      {/* Action Bar */}
       <div className="flex flex-col sm:flex-row gap-4">
         {canEnterReport && (
           <Button 
@@ -98,7 +94,6 @@ export default function ReportsPage() {
         )}
       </div>
 
-      {/* Reports List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {[
           { id: 1, title: 'Annual Camp Logistics', date: '2026-05-12', author: 'Mark Anthony', desc: 'Summary of transport and gear deployment for the May hike.' },
@@ -122,7 +117,6 @@ export default function ReportsPage() {
         ))}
       </div>
 
-      {/* ADD REPORT MODAL */}
       {showAddReport && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
           <div className="w-full max-w-xl bg-[#03150b] border border-primary/20 rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
@@ -136,66 +130,30 @@ export default function ReportsPage() {
             <form onSubmit={handleSubmitReport} className="p-8 space-y-6">
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-white uppercase">Title *</Label>
-                <Input 
-                  required 
-                  className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white"
-                />
+                <Input required className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white" />
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-white uppercase">Event Date *</Label>
-                <Input 
-                  type="date" 
-                  required 
-                  className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white"
-                />
+                <Input type="date" required className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white" />
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-white uppercase">Brief Description *</Label>
-                <Input 
-                  required 
-                  className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white"
-                />
+                <Input required className="rounded-xl bg-black/40 border-primary/40 focus:border-primary h-12 text-white" />
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-white uppercase">Full Report</Label>
-                <Textarea 
-                  placeholder="Type the full report here..." 
-                  className="min-h-[120px] rounded-xl bg-black/40 border-primary/40 focus:border-primary text-white p-4"
-                />
+                <Textarea placeholder="Type the full report here..." className="min-h-[120px] rounded-xl bg-black/40 border-primary/40 focus:border-primary text-white p-4" />
               </div>
-
               <div className="space-y-3">
                 <Label className="text-xs font-bold text-white uppercase">Upload Document</Label>
                 <div className="border-2 border-dashed border-primary/20 rounded-2xl p-8 flex flex-col items-center justify-center bg-black/20 hover:bg-black/40 transition-colors group cursor-pointer">
                   <Upload className="w-8 h-8 text-primary/40 group-hover:text-primary transition-colors mb-4" />
-                  <p className="text-[10px] text-muted-foreground uppercase text-center mb-2">Uploading a document is the best choice for detailed reports</p>
+                  <p className="text-[10px] text-muted-foreground uppercase text-center mb-2">Uploading documents is recommended</p>
                   <span className="text-yellow-500 font-bold text-xs underline decoration-primary/40 hover:decoration-primary">Choose file</span>
                   <input type="file" className="hidden" />
                 </div>
               </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs font-bold text-white uppercase">Visible to</Label>
-                <Select defaultValue="everyone">
-                  <SelectTrigger className="rounded-xl bg-black/40 border-primary/40 h-12 text-white">
-                    <SelectValue placeholder="Everyone" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#03150b] border-primary/20 text-white">
-                    <SelectItem value="everyone">Everyone</SelectItem>
-                    <SelectItem value="leaders">Leaders Only</SelectItem>
-                    <SelectItem value="seniors">Seniors Only</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full h-14 rounded-2xl bg-[#7c6317] hover:bg-[#8c7327] text-white font-black uppercase tracking-widest shadow-xl mt-4"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full h-14 rounded-2xl bg-[#7c6317] hover:bg-[#8c7327] text-white font-black uppercase tracking-widest shadow-xl mt-4" disabled={loading}>
                 {loading ? "Transmitting..." : "Submit Report"}
               </Button>
             </form>
@@ -203,7 +161,6 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* ANNOUNCEMENT MODAL */}
       {showAddAnnouncement && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
           <Card className="w-full max-w-xl glass-panel border-none rounded-[3rem] p-10 space-y-8 animate-in slide-in-from-bottom-4">
@@ -216,7 +173,7 @@ export default function ReportsPage() {
              <form onSubmit={handleAnnouncement} className="space-y-6">
                 <div className="space-y-2">
                    <Label className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Broadcast Title</Label>
-                   <Input placeholder="e.g. Uniform Inspection Next Wednesday" className="rounded-2xl bg-black/20 border-white/5 h-14" required />
+                   <Input placeholder="e.g. Uniform Inspection" className="rounded-2xl bg-black/20 border-white/5 h-14" required />
                 </div>
                 <div className="space-y-2">
                    <Label className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Target Scope</Label>

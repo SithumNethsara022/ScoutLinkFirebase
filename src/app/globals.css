@@ -43,15 +43,15 @@
   @apply text-primary font-bold;
 }
 
-/* Balanced Super Liquid Glass - Depth & Transparency */
+/* Deeper Liquid Glass with balanced transparency */
 .glass-panel {
-  @apply bg-white/[0.05] backdrop-blur-[100px] border border-white/10 shadow-2xl;
-  background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+  @apply bg-white/[0.07] backdrop-blur-[100px] border border-white/10 shadow-2xl;
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 100%);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .liquid-glass {
-  @apply bg-white/[0.08] backdrop-blur-[120px] border border-white/15;
+  @apply bg-white/[0.1] backdrop-blur-[120px] border border-white/20;
   box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1.5px rgba(255, 255, 255, 0.1);
 }
 
@@ -64,11 +64,11 @@
 }
 
 .action-card {
-  @apply glass-panel hover:bg-white/10 transition-all duration-500 cursor-pointer rounded-[2rem] md:rounded-[2.5rem];
+  @apply glass-panel hover:bg-white/15 transition-all duration-500 cursor-pointer rounded-[2rem] md:rounded-[2.5rem];
 }
 
 .hero-section {
-  @apply scout-gradient border border-primary/20 p-5 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] relative overflow-hidden;
+  @apply scout-gradient border border-primary/20 p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] relative overflow-hidden;
 }
 
 .hero-section::before {
@@ -98,8 +98,4 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.animate-pulse-slow {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
