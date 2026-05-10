@@ -8,22 +8,21 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const knownBadgeCategories = {
-  "Public Service": ["Linguist", "Missioner", "Fire-Fighter", "Signaller", "Cyclist", "Guide", "First Aid", "Life Saver", "Coxswain", "Jobman", "Ambulance", "Senior Organizer", "Civics"],
-  "Camp Craft": ["Camper", "Cook", "Woodcraftsman", "Pioneer", "Backwoodsman", "Quarter Master", "Camp Warden"],
-  "Practical Science": ["Gardener", "Astronomer", "Naturalist", "Scientist", "Electrician", "Home Electrician"],
-  "Explorer": ["Explorer", "Hiker", "Navigator", "Orienteer"],
-  "Better World Framework": ["World Friendship", "Environmentalist", "Community Developer", "Global Citizen", "Sustainable Development", "Scout of the World", "Messenger of Peace"],
-  "Education": ["Reader", "Speaker", "Scholar", "Scribe", "Writer", "Artist", "Communicator", "Interpreter", "Computer", "Literacy", "Digital Citizen"],
-  "Culture": ["Musician", "Folk Dancer", "Dramatist", "Culture and Heritage"],
-  "Sports": ["Athlete", "Swimmer", "Cyclist", "Games Player", "Team Player", "Fitness"],
+  "Public Service": ["Interpreter", "Public Health", "Fireman", "Leading Signaller", "Dispatch Rider", "Path Finder", "Ambulance", "Rescuer", "Pilot", "Handyman", "Civics"],
+  "Camp Craft": ["Camp Warden", "Master Cook", "Naturalist", "Senior Pioneer", "Venturer", "Quarter Master"],
+  "Practical Science": ["Gardener", "Astronomer", "Naturalist", "Scientist", "Electrician", "Home Electrician", "Aircraft Constructor", "Radio Mechanic", "Photographer", "Motor Mechanic"],
+  "Explorer": ["Tracker", "Hiker", "Navigator", "Orienteer", "Surveyor", "Meteorologist", "Observer", "Stalker", "Map Maker", "Starman", "Weatherman"],
+  "Better World Framework": ["World Friendship", "Environmentalist", "Community Developer", "Global Citizen", "Sustainable Development", "Scout of the World", "Messenger of Peace", "Messengers of Peace", "Champions for Nature", "Patrimonito Scout Badge", "Tide Turners Plastic Challenge", "Scouts Go Solar"],
+  "Education": ["Bookman", "Orator", "Senior Scholar", "Clerk", "Reader", "Speaker", "Scholar", "Scribe", "Writer", "Artist", "Communicator", "Interpreter", "Computer", "Literacy", "Digital Citizen"],
+  "Culture": ["Artist", "Musician", "Play Actor", "Folk Dancer", "Dramatist", "Culture and Heritage", "Designer", "Music Maker", "Actor", "Modeller", "Dancer"],
+  "Sports": ["Athlete", "Swimmer", "Sportsman", "Horseman", "Archery", "Games Player", "Team Player", "Fitness", "Senior Athlete", "Master Swimmer", "Master Sportsman"],
   "Happy Home": ["Junior Happy Home", "Senior Happy Home"],
-  "Farmer": ["Farmer", "Agriculture"],
-  "Venture": ["Venture", "Entrepreneur"],
-  "Senior Saver": ["Senior Saver", "Personal Finance"],
+  "Family Life": ["Junior Saver", "Senior Saver", "Personal Finance"],
 };
 
 const AwardPrerequisiteAdvisorInputSchema = z.object({
   awardName: z.enum([
+    "Membership Award",
     "Scout Award",
     "Chief Commissioner's Award",
     "Prime Minister's Award",
@@ -55,16 +54,21 @@ const awardPrerequisiteAdvisorPrompt = ai.definePrompt({
   name: 'awardPrerequisiteAdvisorPrompt',
   input: {schema: AwardPrerequisiteAdvisorInputSchema},
   output: {schema: AwardPrerequisiteAdvisorOutputSchema},
-  prompt: `You are an AI assistant specialized in Boy Scout award requirements.
+  prompt: `You are an AI assistant specialized in Boy Scout award requirements for the 42nd Colombo Gold Troop.
 
 Award Rules:
 - Scout Award: "Junior Happy Home" OR "Senior Happy Home" + 2 badges NOT in Public Service or Camp Craft groups.
 - CC's Award: First Aid + (Missioner OR Public Health OR Ambulance) + 1 from (Practical Science / Camp Craft / Explorer / Better World Framework).
-- PM's Award: 1 from (Education / Culture / Senior Saver / Better World Framework - excl SOTW/MOP) + 1 from Sports + Farmer + Civics + Venture.
+- PM's Award: 1 from (Education / Culture / Senior Saver / Better World Framework - excluding Scout of the World or Messenger of Peace) + 1 from Sports + Farmer + Civics + Venture.
 - President's Scout: Senior Happy Home + Ambulance (Repass) + (Quarter Master OR Camp Warden) + Senior Organizer + 1 from Public Service.
 
 Categories:
 ${JSON.stringify(knownBadgeCategories, null, 2)}
+
+Instructions:
+1. Compare the 'scoutProficiencyBadges' with the requirements for the 'awardName'.
+2. List each required badge or category, indicating 'isCompleted' true if the scout has it.
+3. Provide guidance on what is missing.
 
 Award Name: {{{awardName}}}
 Scout's Badges: {{{scoutProficiencyBadges}}}
