@@ -10,7 +10,7 @@
         "email": { "type": "string", "format": "email" },
         "birthday": { "type": "string", "format": "date" },
         "grade": { "type": "number" },
-        "subTroop": { "type": "string", "enum": ["Gold I", "Gold II", "Gold III", "Gold IV"] },
+        "subTroop": { "type": "string" },
         "patrol": { "type": "string" },
         "position": { "type": "string" },
         "role": { "type": "string" },
@@ -18,43 +18,20 @@
         "phoneNumber": { "type": "string" },
         "parentsNames": { "type": "string" },
         "profilePicUrl": { "type": "string" },
+        "onboarded": { "type": "boolean" },
+        "totalPoints": { "type": "number" },
         "awards": {
           "type": "array",
-          "items": { "$ref": "#/entities/AwardStatus" }
-        },
-        "proficiencyBadges": {
-          "type": "array",
-          "items": { "$ref": "#/entities/ProficiencyBadge" }
-        },
-        "totalPoints": { "type": "number" },
-        "committees": {
-          "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
         }
       },
       "required": ["name", "email", "birthday", "role"]
-    },
-    "AwardStatus": {
-      "title": "Award Status",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "status": { "type": "string", "enum": ["Not Started", "Test Passing", "Instructor Interview Pending", "Scout Leader Interview Pending", "ADC Interview Pending", "Passed"] },
-        "hikeDone": { "type": "boolean" },
-        "badgesDone": { "type": "boolean" },
-        "passingDate": { "type": "string" }
-      }
-    },
-    "ProficiencyBadge": {
-      "title": "Proficiency Badge",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "code": { "type": "string" },
-        "type": { "type": "string", "enum": ["Junior", "Senior"] },
-        "category": { "type": "string" },
-        "passedDate": { "type": "string" }
-      }
     },
     "Notification": {
       "title": "Notification",
@@ -75,7 +52,7 @@
   "firestore": {
     "/users/{userId}": {
       "schema": "ScoutProfile",
-      "description": "Scout user profiles"
+      "description": "User profiles"
     },
     "/notifications/{notificationId}": {
       "schema": "Notification",

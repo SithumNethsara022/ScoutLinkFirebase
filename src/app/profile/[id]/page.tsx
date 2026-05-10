@@ -1,7 +1,7 @@
-"use client";
 
-import { use, useState } from 'react';
-import { MOCK_SCOUTS } from '@/lib/mock-data';
+'use client';
+
+import { use, useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,30 +9,58 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { 
-  User, Phone, MapPin, Award as AwardIcon, BookOpen, 
-  Edit3, Save, MessageSquare, Crown, Trophy, Users, Shield, Star
+  User, Phone, MapPin, Award as AwardIcon, Edit3, Save, 
+  MessageSquare, Shield, Star, Camera
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useUser, useFirestore, useDoc } from '@/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { user } = useUser();
+  const db = useFirestore();
   const router = useRouter();
-  const scout = MOCK_SCOUTS.find(s => s.id === id) || MOCK_SCOUTS[0];
+  const { data: profile, loading } = useDoc(db ? doc(db, 'users', id) : null);
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState(scout);
+  const [editedProfile, setEditedProfile] = useState<any>(null);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast({ title: "Profile Transmitted", description: "Changes saved to the troop registry." });
+  useEffect(() => {
+    if (profile) setEditedProfile(profile);
+  }, [profile]);
+
+  const handleSave = async () => {
+    if (!db || !id) return;
+    try {
+      await updateDoc(doc(db, 'users', id), editedProfile);
+      setIsEditing(false);
+      toast({ title: "Registry Updated", description: "Your changes have been authenticated." });
+    } catch (error: any) {
+      toast({ title: "Update Failed", description: error.message, variant: "destructive" });
+    }
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditedProfile({ ...editedProfile, profilePicUrl: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  if (loading) return <div className="flex h-[60vh] items-center justify-center"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
 
   if (!profile) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
-        <h2 className="text-2xl font-black gold-text uppercase">Profile Not Found</h2>
-        <p className="text-muted-foreground text-sm uppercase tracking-widest font-black">The requested scout profile does not exist in the registry.</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4 animate-in fade-in duration-500">
+        <h2 className="text-2xl font-black gold-text uppercase">Personnel Missing</h2>
+        <p className="text-muted-foreground text-[10px] uppercase tracking-widest font-black">Record not found in troop registry.</p>
         <Link href="/">
            <Button className="rounded-2xl bg-primary text-black font-black uppercase tracking-widest px-8 h-12">Return to HQ</Button>
         </Link>
@@ -40,19 +68,26 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
     );
   }
 
+  const isOwnProfile = user?.uid === id;
+
   return (
-    <div className="space-y-10 pb-24 max-w-7xl mx-auto">
+    <div className="space-y-10 pb-24 max-w-7xl mx-auto animate-in slide-in-from-bottom-5 duration-700">
       <div className="flex flex-col lg:flex-row gap-10 items-start">
         <div className="w-full lg:w-[420px] space-y-8">
           <Card className="hero-section border-none text-center overflow-hidden !rounded-[4rem] shadow-2xl relative">
              <div className="h-40 bg-gradient-to-br from-primary/30 to-transparent relative">
                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
                  <div className="w-40 h-40 rounded-[3.5rem] border-8 border-background bg-card overflow-hidden shadow-2xl relative group">
-                   <img src={`https://picsum.photos/seed/${profile.name}/400`} alt={profile.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                   <img 
+                     src={editedProfile?.profilePicUrl || profile.profilePicUrl} 
+                     alt={profile.name} 
+                     className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" 
+                   />
                    {isEditing && (
-                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Edit3 className="w-8 h-8 text-primary" />
-                     </div>
+                     <label className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                        <Camera className="w-8 h-8 text-primary" />
+                        <input type="file" className="sr-only" onChange={handleFileChange} />
+                     </label>
                    )}
                  </div>
                </div>
@@ -62,142 +97,106 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                <p className="text-muted-foreground uppercase font-black text-[10px] tracking-[0.3em] mt-4">{profile.role}</p>
                
                <div className="mt-8 flex flex-wrap justify-center gap-3">
-                 <Badge className="bg-primary/10 text-primary border border-primary/20 text-[8px] font-black uppercase tracking-widest px-4 py-1.5">{profile.position}</Badge>
+                 <Badge className="bg-primary/10 text-primary border border-primary/20 text-[8px] font-black uppercase tracking-widest px-4 py-1.5">{profile.position || 'Registered'}</Badge>
                  {profile.patrol && <Badge variant="outline" className="border-white/10 text-[8px] font-black uppercase tracking-widest px-4 py-1.5">{profile.patrol} Patrol</Badge>}
                </div>
 
                <div className="mt-10 flex flex-col gap-3">
-                  <Link href="/org-chart" className="w-full">
-                    <Button variant="outline" className="w-full h-14 rounded-3xl border-primary/20 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-primary/10">
-                      <Shield className="w-5 h-5 mr-3" /> Authorities Chart
+                  {isOwnProfile && (
+                    <Button 
+                      onClick={() => isEditing ? handleSave() : setIsEditing(true)} 
+                      className="h-14 rounded-3xl bg-primary text-black font-black uppercase text-[10px] tracking-widest shadow-xl transition-all active:scale-95"
+                    >
+                      {isEditing ? <Save className="w-5 h-5 mr-3" /> : <Edit3 className="w-5 h-5 mr-3" />}
+                      {isEditing ? 'Commit Changes' : 'Modify Registry'}
                     </Button>
-                  </Link>
-                  <Button onClick={() => router.push(`/messages?chat=${profile.id}`)} className="h-14 rounded-3xl bg-primary text-black font-black uppercase text-[10px] tracking-widest shadow-xl">
-                    <MessageSquare className="w-5 h-5 mr-3" /> Send Message
+                  )}
+                  <Button variant="outline" className="h-14 rounded-3xl border-white/5 text-muted-foreground font-black uppercase text-[10px] tracking-widest">
+                    <MessageSquare className="w-5 h-5 mr-3" /> Encrypted Transmission
                   </Button>
                </div>
              </CardContent>
           </Card>
 
-          <div className="grid grid-cols-2 gap-6">
-            <Card className="glass-panel border-none rounded-[3rem] p-8 text-center shadow-xl">
-                <p className="text-[9px] text-muted-foreground uppercase font-black mb-3 tracking-widest">Total Points</p>
-                <p className="text-4xl font-black gold-text tracking-tighter leading-none">{profile.totalPoints}</p>
-            </Card>
-            <Card className="glass-panel border-none rounded-[3rem] p-8 text-center shadow-xl">
-                <p className="text-[9px] text-muted-foreground uppercase font-black mb-3 tracking-widest">Rank Position</p>
-                <p className="text-4xl font-black gold-text tracking-tighter leading-none">#1</p>
-            </Card>
-          </div>
-
           <Card className="glass-panel border-none rounded-[3.5rem] p-8 space-y-6 shadow-xl">
             <CardTitle className="text-[10px] font-black gold-text uppercase tracking-widest flex items-center gap-3">
-              <Star className="w-5 h-5" /> Extra Positions
+              <Star className="w-5 h-5" /> Efficiency Stats
             </CardTitle>
-            <div className="space-y-3">
-              {(profile.extraPositions || []).map((pos, idx) => (
-                <div key={idx} className="p-5 rounded-[1.75rem] bg-white/[0.03] border border-white/5 text-[10px] font-black uppercase flex items-center gap-3">
-                   <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                   {pos}
-                </div>
-              ))}
-              {isEditing && (
-                <Button variant="ghost" className="w-full rounded-2xl border-dashed border-white/10 h-12 text-[9px] font-black uppercase text-muted-foreground">
-                  + Add Position
-                </Button>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+               <div className="p-6 rounded-3xl bg-white/[0.03] text-center border border-white/5">
+                  <p className="text-[8px] uppercase font-black text-muted-foreground mb-1 tracking-widest">Points</p>
+                  <p className="text-2xl font-black text-primary">{profile.totalPoints || 0}</p>
+               </div>
+               <div className="p-6 rounded-3xl bg-white/[0.03] text-center border border-white/5">
+                  <p className="text-[8px] uppercase font-black text-muted-foreground mb-1 tracking-widest">Grade</p>
+                  <p className="text-2xl font-black text-primary">{profile.grade || '--'}</p>
+               </div>
             </div>
           </Card>
         </div>
 
         <div className="flex-1 space-y-10">
           <Tabs defaultValue="details" className="w-full">
-            <TabsList className="bg-black/20 border border-white/5 p-1.5 rounded-3xl h-16 w-full lg:w-auto">
-              <TabsTrigger value="details" className="rounded-2xl px-12 text-[10px] font-black uppercase tracking-widest transition-all">Identity</TabsTrigger>
-              <TabsTrigger value="badges" className="rounded-2xl px-12 text-[10px] font-black uppercase tracking-widest transition-all">Badge Works</TabsTrigger>
-              <TabsTrigger value="events" className="rounded-2xl px-12 text-[10px] font-black uppercase tracking-widest transition-all">Events</TabsTrigger>
+            <TabsList className="bg-black/20 border border-white/5 p-1.5 rounded-3xl h-16">
+              <TabsTrigger value="details" className="rounded-2xl px-12 text-[10px] font-black uppercase tracking-widest">Identity</TabsTrigger>
+              <TabsTrigger value="registry" className="rounded-2xl px-12 text-[10px] font-black uppercase tracking-widest">Registry</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="details" className="mt-10">
-              <Card className="glass-panel border-none rounded-[4rem] p-8 shadow-2xl">
-                <CardHeader className="flex flex-row items-center justify-between p-0 mb-10">
-                  <CardTitle className="text-xl font-black gold-text uppercase tracking-tight flex items-center gap-4">
-                    <User className="w-8 h-8" /> Personal Archive
-                  </CardTitle>
-                  <Button 
-                    variant="ghost"
-                    className={isEditing ? "bg-primary text-black" : "text-primary border border-primary/20"}
-                    onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                  >
-                    {isEditing ? <Save className="w-4 h-4 mr-2" /> : <Edit3 className="w-4 h-4 mr-2" />}
-                    <span className="text-[9px] font-black uppercase tracking-widest">{isEditing ? 'Commit' : 'Modify'}</span>
-                  </Button>
-                </CardHeader>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <TabsContent value="details" className="mt-10 space-y-8 animate-in fade-in slide-in-from-right-5 duration-500">
+              <Card className="glass-panel border-none rounded-[4rem] p-10 shadow-2xl">
+                <CardTitle className="text-xl font-black gold-text uppercase tracking-tight flex items-center gap-4 mb-10">
+                  <User className="w-8 h-8" /> Archive Profile
+                </CardTitle>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <Label className="text-[9px] uppercase font-black text-muted-foreground ml-2">Name</Label>
-                    <Input value={profile.name} disabled={!isEditing} className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black uppercase text-sm" />
+                    <Label className="text-[9px] uppercase font-black text-muted-foreground ml-2">Display Name</Label>
+                    <Input 
+                      value={editedProfile?.name || ''} 
+                      disabled={!isEditing} 
+                      onChange={(e) => setEditedProfile({...editedProfile, name: e.target.value})}
+                      className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black uppercase text-xs" 
+                    />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-[9px] uppercase font-black text-muted-foreground ml-2">Contact</Label>
-                    <Input value={profile.phoneNumber} disabled={!isEditing} className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black uppercase text-sm" />
+                    <Label className="text-[9px] uppercase font-black text-muted-foreground ml-2">Contact Number</Label>
+                    <Input 
+                      value={editedProfile?.phoneNumber || ''} 
+                      disabled={!isEditing} 
+                      onChange={(e) => setEditedProfile({...editedProfile, phoneNumber: e.target.value})}
+                      className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black text-xs" 
+                    />
                   </div>
                   <div className="space-y-3 md:col-span-2">
                     <Label className="text-[9px] uppercase font-black text-muted-foreground ml-2">Residential Address</Label>
-                    <Input value={profile.homeAddress} disabled={!isEditing} className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black uppercase text-sm" />
+                    <Input 
+                      value={editedProfile?.homeAddress || ''} 
+                      disabled={!isEditing} 
+                      onChange={(e) => setEditedProfile({...editedProfile, homeAddress: e.target.value})}
+                      className="rounded-2xl bg-black/40 border-white/5 h-16 px-6 font-black text-xs" 
+                    />
                   </div>
                 </div>
               </Card>
             </TabsContent>
 
-            <TabsContent value="badges" className="mt-10">
-              <div className="space-y-10">
-                <Card className="glass-panel border-none rounded-[4rem] p-8 shadow-2xl">
+            <TabsContent value="registry" className="mt-10 animate-in fade-in slide-in-from-right-5 duration-500">
+               <Card className="glass-panel border-none rounded-[4rem] p-10 shadow-2xl">
                   <CardTitle className="text-xl font-black gold-text uppercase tracking-tight flex items-center gap-4 mb-10">
-                    <AwardIcon className="w-8 h-8" /> Award Progress
+                    <AwardIcon className="w-8 h-8" /> Badge Progression
                   </CardTitle>
                   <div className="space-y-6">
-                    {(profile.awards || []).map((a, i) => (
-                      <div key={i} className="p-6 rounded-[2.5rem] bg-white/[0.03] border border-white/5 flex items-center justify-between hover:bg-white/[0.06] transition-all">
-                        <div>
-                          <p className="font-black text-sm uppercase tracking-tighter text-primary">{a.name}</p>
-                          <p className="text-[9px] uppercase font-black text-muted-foreground mt-1">Status: {a.status} • Passed: {a.passingDate || 'N/A'}</p>
-                        </div>
-                        <Badge className="bg-green-500/20 text-green-500 border-none text-[8px] font-black uppercase">Verified</Badge>
+                    {profile.awards?.length > 0 ? profile.awards.map((a: any, i: number) => (
+                      <div key={i} className="p-8 rounded-[3rem] bg-white/[0.03] border border-white/5 flex items-center justify-between">
+                         <div>
+                            <p className="font-black text-lg uppercase tracking-tight text-primary">{a.name}</p>
+                            <p className="text-[9px] uppercase font-black text-muted-foreground mt-2 tracking-widest">Status: {a.status}</p>
+                         </div>
                       </div>
-                    ))}
-                  </div>
-                </Card>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="events" className="mt-10">
-               <Card className="glass-panel border-none rounded-[4rem] p-8 shadow-2xl">
-                  <CardTitle className="text-xl font-black gold-text uppercase tracking-tight flex items-center gap-4 mb-10">
-                    <Trophy className="w-8 h-8" /> Event Participation
-                  </CardTitle>
-                  <div className="space-y-4">
-                    {(profile.eventHistory || []).map((event, i) => (
-                      <div key={i} className="p-8 rounded-[3rem] bg-white/[0.03] border border-white/5 flex items-center justify-between group">
-                        <div className="flex gap-8 items-center">
-                            <div className="w-16 h-16 rounded-[2rem] bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:rotate-6 transition-transform">
-                                <Trophy className="w-8 h-8 text-amber-500" />
-                            </div>
-                            <div>
-                                <p className="font-black text-lg uppercase tracking-tight">{event.name}</p>
-                                <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-2">{event.place} Place • {event.date}</p>
-                            </div>
-                        </div>
-                        <Badge className="bg-primary/20 text-primary border-none text-[8px] font-black uppercase px-4 py-2">
-                            {event.confirmed ? 'Confirmed' : 'Pending'}
-                        </Badge>
+                    )) : (
+                      <div className="py-20 text-center opacity-30">
+                        <AwardIcon className="w-12 h-12 mx-auto mb-4" />
+                        <p className="text-[10px] font-black uppercase tracking-widest">No awards registered</p>
                       </div>
-                    ))}
-                    {(!profile.eventHistory || profile.eventHistory.length === 0) && (
-                        <div className="py-20 text-center opacity-30">
-                            <Trophy className="w-12 h-12 mx-auto mb-4" />
-                            <p className="text-[10px] font-black uppercase tracking-widest">No event history found</p>
-                        </div>
                     )}
                   </div>
                </Card>
